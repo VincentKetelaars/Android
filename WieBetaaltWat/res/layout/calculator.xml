@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/calc_edit_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:singleLine="true"
+        android:cursorVisible="true" />
+
+    <TableLayout
+        android:id="@+id/calc_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" >
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/calc_num_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_op_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+" >
+            </Button>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/calc_num_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_op_minus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-" >
+            </Button>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/calc_num_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_op_times"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*" >
+            </Button>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/calc_num_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_num_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="." >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_op_is"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="=" >
+            </Button>
+
+            <Button
+                android:id="@+id/calc_op_divide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/" >
+            </Button>
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/calc_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/use" >
+        </Button>
+
+        <Button
+            android:id="@+id/calc_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back" >
+        </Button>
+
+        <Button
+            android:id="@+id/calc_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear" >
+        </Button>
+
+        <Button
+            android:id="@+id/calc_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel" >
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>

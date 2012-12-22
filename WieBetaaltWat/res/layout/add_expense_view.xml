@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/add_expense_spender_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/payed_by" >
+        </TextView>
+
+        <Spinner
+            android:id="@+id/spinner_members"
+            style="@style/my_spinner_style"
+            android:layout_alignParentRight="true"
+            android:drawSelectorOnTop="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/add_expense_date_linearlayout"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/add_expense_amount_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/amount" >
+            </TextView>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/add_expense_amount_input"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/calculator_button"
+                    android:inputType="numberDecimal" />
+
+                <Button
+                    android:id="@+id/calculator_button"
+                    style="@style/calculator_logo" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/add_expense_date_linearlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/add_expense_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date" >
+            </TextView>
+
+            <Button
+                android:id="@+id/add_expense_date_input"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+            </Button>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/description" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/add_description_input"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|left"
+        android:inputType="textMultiLine"
+        android:maxLines="2"
+        android:scrollHorizontally="false"
+        android:singleLine="false" >
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/add_expense_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textSize="14dp" >
+        </Button>
+
+        <Button
+            android:id="@+id/add_expense_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/submit"
+            android:textSize="14dp" >
+        </Button>
+
+        <Button
+            android:id="@+id/add_expense_modify_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/modify"
+            android:textSize="14dp"
+            android:visibility="gone" >
+        </Button>
+
+        <Button
+            android:id="@+id/add_expense_clear_all_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_all"
+            android:textSize="14dp" >
+        </Button>
+
+        <Button
+            android:id="@+id/add_expense_add_all_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_all"
+            android:textSize="14dp" >
+        </Button>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/add_members_view"
+        style="@style/my_list_style" >
+    </ListView>
+
+</LinearLayout>

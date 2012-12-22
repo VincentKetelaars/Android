@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/add_expense_list"
+        android:icon="@drawable/orange_plus_sign"
+        android:showAsAction="ifRoom"
+        android:title="@string/add">
+    </item>
+    <item
+        android:id="@+id/refresh_expense_list"
+        android:icon="@drawable/refresh"
+        android:showAsAction="ifRoom"
+        android:title="@string/refresh">
+    </item>
+    <item
+        android:id="@+id/filter_expense_list"
+        android:icon="@drawable/search_icon"
+        android:showAsAction="ifRoom"
+        android:title="@string/filter">
+    </item>
+    <item
+        android:id="@+id/page_expense_list"
+        android:icon="@drawable/page_icon"
+        android:showAsAction="ifRoom"
+        android:title="@string/page">
+    </item>
+    <item
+        android:id="@+id/results_expense_list"
+        android:icon="@drawable/orange_drop_down"
+        android:showAsAction="ifRoom"
+        android:title="@string/results">
+    </item>
+
+</menu>

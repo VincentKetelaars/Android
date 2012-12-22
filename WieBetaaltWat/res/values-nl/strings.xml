@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- General -->
+    <string name="no">Nee</string>
+    <string name="yes">Ja</string>
+    <string name="app_name">WieBetaaltWat</string>
+    <string name="loading">Laden</string>
+    <string name="refreshed">Vernieuwd!</string>
+    <string name="cannot_refresh">Vernieuwen is mislukt.</string>
+    <string name="logged_out_title">Uitgelogd</string>
+    <string name="logged_out">U bent uitgelogd. Druk op OK om opnieuw in te loggen of op Cancel om zo door te gaan.</string>
+    <string name="relogin_success">U bent ingelogd.</string>
+    <string name="relogin_failed">Inloggen is mislukt.</string>
+    <string name="not_connected">U bent op dit moment niet verbonden met het internet.</string>
+    <string name="try_again">Probeer opnieuw aub.</string>
+
+    <!-- Login -->
+    <string name="changeAccountButton">Verander account</string>
+    <string name="shortcut">OK</string>
+    <string name="usernameString">Emailadres:</string>
+    <string name="passwordString">Wachtwoord:</string>
+    <string name="login">Log in</string>
+    <string name="remember_me">Onthoud mij</string>
+    <string name="log_in_as">Klik op OK om in te loggen als:</string>
+    <string name="log_in_title">Inloggen</string>
+    <string name="change_account_string">Als je met een ander account wil inloggen:</string>
+
+    <!-- Login Interactief -->
+    <string name="login_request_failed">Inloggen is mislukt, probeer later nog eens.</string>
+    <string name="login_data_incorrect">Inloggen is mislukt, verifieer je emailadres en wachtwoord.</string>
+
+    <!-- Menu -->
+    <string name="refresh">Vernieuw</string>
+    <string name="add">Voeg toe</string>
+    <string name="modify">Bewerk</string>
+    <string name="delete">Verwijder</string>
+    <string name="page">Pagina</string>
+    <string name="results">Uitgaven per pagina</string>
+    <string name="filter">Filter</string>
+
+    <!-- WBWList -->
+    <string name="wbw_list_name_header">Lijst</string>
+    <string name="wbw_list_my_balance_header">Mijn stand</string>
+    <string name="wbw_list_highest_balance_header">Hoogste stand</string>
+    <string name="wbw_list_lowest_balance_header">Laagste stand</string>
+
+    <!-- WBWList Interactief -->
+    <string name="wbw_list_retrieve_failed">Deze lijst is niet beschikbaar.</string>
+    <string name="wbw_list_null">Het overzicht kon niet worden opgehaald. Probeer opnieuw in te loggen.</string>
+
+    <!-- ExpenseList -->
+    <string name="none">geen</string>
+    <string name="spender">betaler</string>
+    <string name="participant">deelnemer</string>
+    <string name="both">beide</string>
+
+    <!-- ExpenseList Interactief -->
+    <string name="show_page">Zoek pagina</string>
+    <string name="expense_list_retrieved">Nieuwe lijst opgehaald!</string>
+    <string name="member_list_retrieve_failed">Het ophalen van de balans van je groepsgenoten is mislukt.</string>
+    <string name="expense_list_null">De lijst kon niet worden opgehaald. Probeer opnieuw in te loggen.</string>
+    <string name="deletion_success">Het verwijderen is gelukt!</string>
+    <string name="filtered_none">Alle uitgaven worden weergegeven.</string>
+    <string name="filtered_on">Alleen de uitgaven waar NAME FILTER1 of FILTER2 is, worden weergegeven.</string>
+    <string name="delete_expense_unknown">De website heeft een onbekend antwoord gegeven. Vernieuw de pagina, en kijk of het verwijderen gelukt is. Neem aub contact op met de beheerder van de app.</string>
+
+    <!-- Add Expense -->
+    <string name="cancel">Cancel</string>
+    <string name="submit">Verwerk</string>
+    <string name="description">Beschrijving</string>
+    <string name="date">Datum (dd-mm-jjjj)</string>
+    <string name="payed_by">Betaald door</string>
+    <string name="amount">Bedrag</string>
+    <string name="add_all">Ieder 1x</string>
+    <string name="clear_all">Ieder 0x</string>
+
+    <!-- Add Expense interactive -->
+    <string name="calc_incorrect_use">Verifieer dat je alleen maar een getal in het invoerveld hebt staan, en probeer opnieuw.</string>
+    <string name="duplicate_data">Gedupliceerde data</string>
+    <string name="duplicate_data_question">De gegevens die je nu wil versturen heb je reeds eerder verstuurd. Wil je hier mee doorgaan?</string>
+    <string name="expense_add_success">Het toevoegen van de uitgave is gelukt!</string>
+    <string name="expense_modify_success">Het bewerken vand de uitgave is gelukt!</string>
+    <string name="calc_incorrect_date">Gebruik aub de juist invoer voor de datum (dd-mm-jjjj).\n</string>
+    <string name="calc_incorrect_amount">Zorg er voor dat u een correct bedrag heeft ingevuld.\n</string>
+    <string name="calc_incorrect_description">Zorg er voor dat u een beschrijving heeft ingevuld.\n</string>
+    <string name="calc_incorrect_count">Zorg er voor dat u minstens één persoon heeft toegevoegd.\n</string>
+    <string name="expense_add_unknown">De website heeft een onbekend antwoord gegeven. Ga terug naar de vorige pagina, vernieuw de pagina, en kijk of je actie gelukt is. Neem aub contact op met de beheerder van de app.</string>
+    <string name="expense_add_fail">Het toevoegen van de uitgave is mislukt. Probeer het opnieuw en neem aub contact op met de beheerder van de app.</string>
+    <string name="expense_modify_fail">Het bewerken van de uitgave is mislukt. Probeer het opnieuw en neem aub contact op met de beheerder van de app.</string>
+
+    <!-- Calculator -->
+    <string name="calculator">Rekenmachine</string>
+    <string name="use">Gebruik</string>
+    <string name="clear">Clear</string>
+    <string name="back">Terug</string>
+    <string name="negative_numbers_not_allowed">Negative getallen zijn niet toegestaan.</string>
+
+    <!-- Calculator interactive -->
+    <string name="calc_verify_input">Verifieer dat u de juiste invoer heeft gegeven.</string>
+    <string name="calc_input_empty">U moet iets invullen voordat er iets kan worden berekend.</string>
+    <string name="calc_failed">Het berekenen van deze invoer is mislukt. Contacteer aub de beheerder van de app.</string>
+
+</resources>

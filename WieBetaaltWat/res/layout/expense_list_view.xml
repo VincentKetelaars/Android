@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <nl.vincentketelaars.wiebetaaltwat.views.HorizontalListView
+        android:id="@+id/member_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.89"
+        android:layout_gravity="center_horizontal" >
+    </nl.vincentketelaars.wiebetaaltwat.views.HorizontalListView>
+
+    <ListView
+        android:id="@+id/expense_list_view"
+        style="@style/my_list_style"
+        android:layout_weight="0.11" >
+    </ListView>
+
+</LinearLayout>

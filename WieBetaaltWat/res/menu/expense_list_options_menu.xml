@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/filter_expense_list"
+        android:title="@string/filter">
+    </item>
+    <item
+        android:id="@+id/add_expense_list"
+        android:title="@string/add">
+    </item>
+    <item
+        android:id="@+id/page_expense_list"
+        android:title="@string/page">
+    </item>
+    <item
+        android:id="@+id/results_expense_list"
+        android:title="@string/results">
+    </item>
+
+</menu>

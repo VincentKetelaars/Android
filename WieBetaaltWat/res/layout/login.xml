@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This XML file holds two views. One is the regular login View, and the other a shortcurt View. By default the regular login View is shown. -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- This TextView is only shown in the shortcut View -->
+
+    <TextView
+        android:id="@+id/log_in_title"
+        style="@style/log_in_title_style"
+        android:text="@string/log_in_title"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/fast_log_in_title"
+        style="@style/log_in_title_style"
+        android:text="@string/log_in_title"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/log_in_as"
+        style="@style/log_in_text_style"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/log_in_as"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/log_in_emailaddress"
+        style="@style/log_in_text_style"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/emailString"
+        style="@style/log_in_text_style"
+        android:text="@string/usernameString" />
+
+    <EditText
+        android:id="@+id/emailInput"
+        style="@style/log_in_edit_text_style"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/passwordString"
+        style="@style/log_in_text_style"
+        android:text="@string/passwordString" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        style="@style/log_in_edit_text_style"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/shortcut"
+        style="@style/log_in_button_style"
+        android:layout_width="fill_parent"
+        android:text="@string/shortcut"
+        android:visibility="gone"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/change_account_string"
+        style="@style/log_in_text_style"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/change_account_string"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/changeAccountButton"
+        style="@style/log_in_button_style"
+        android:layout_width="fill_parent"
+        android:text="@string/changeAccountButton"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/login"
+            style="@style/log_in_button_style"
+            android:text="@string/login" />
+
+        <CheckBox
+            android:id="@+id/rememberMe"
+            style="@style/log_in_text_style"
+            android:text="@string/remember_me" />
+    </LinearLayout>
+
+</LinearLayout>
