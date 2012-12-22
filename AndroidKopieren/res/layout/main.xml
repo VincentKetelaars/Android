@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/setCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setCopy" >
+        </Button>
+
+        <Button
+            android:id="@+id/getCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/getCopy" >
+        </Button>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:visibility="gone" >
+        </Spinner>
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:visibility="gone" >
+        </Button>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/imageview_description"
+        android:visibility="gone" >
+    </ImageView>
+
+    <EditText
+        android:id="@+id/copiedString"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:hint="@string/copiedString"
+        android:inputType="textMultiLine"
+        android:visibility="gone" >
+    </EditText>
+
+</LinearLayout>

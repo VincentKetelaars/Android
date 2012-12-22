@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, AndroidKopierenActivity!</string>
+    <string name="app_name">AndroidKopieren</string>
+    <string name="setCopy">Send</string>
+    <string name="getCopy">Retrieve</string>
+    <string name="copiedString">Hier moet iets komen te staan..</string>
+    
+    <!-- Login -->
+    <string name="usernameString">Username: (Minimum characters: 6, only letters and
+		digits)</string>
+	<string name="passwordString">Password: (Minimum characters: 6, only letters and
+		digits)</string>
+	<string name="login">Log in</string>
+	<string name="register">Register</string>
+	<string name="changeAccountButton">Change Account</string>
+	<string name="shortcut">OK</string>
+	<string name="delete">Delete</string>
+	<string name="imageview_description">Copied content from server</string>
+
+</resources>

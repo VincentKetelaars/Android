@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/changeAccountString"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/usernameString"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/usernameString" />
+
+    <EditText
+        android:id="@+id/usernameInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/passwordString"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/passwordString" />
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login" />
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register" />
+
+        <Button
+            android:id="@+id/shortcut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shortcut"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/changeAccountButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/changeAccountButton"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>
