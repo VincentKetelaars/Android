@@ -27,6 +27,7 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 	private List<Member> members = new ArrayList<Member>();
 	private double amount;
 	private Context context;
+	private String spender;
 
 	public AddMemberListAdapter(Context context, int textViewResourceId, List<Member> objects) {
 		super(context, textViewResourceId, objects);
@@ -64,16 +65,21 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 		// Make sure that the double is printed with two decimals
 		DecimalFormat df = new DecimalFormat();
 		df.setMinimumFractionDigits(2);
-		df.setMaximumFractionDigits(2);			
+		df.setMaximumFractionDigits(2);	
 		
 		// Set the balance
 		if (member.getCount() > 0)
-			member.setBalance(amount * member.getCount() / getTotalCount());
+			member.setBalance(-amount * member.getCount() / getTotalCount());
 		else
-			member.setBalance(0.0);
+			member.setBalance(0.0);		
+		
+		// Set spender balance
+		if (member.getMember().equals(spender) && getTotalCount() > 0) {
+			member.setBalance(amount * (getTotalCount() - member.getCount()) / getTotalCount());
+		}
 		
 		// Set the textview text
-		name.setText(member.getMember()+" (€ -"+df.format(member.getBalance())+")");
+		name.setText(member.getMember()+" (€ "+df.format(member.getBalance())+")");
 		
 		// Set the spinner selection
 		spinner.setSelection(member.getCount());
@@ -153,6 +159,11 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 
 	public void setMembers(List<Member> members) {
 		this.members = members;
+		this.notifyDataSetChanged();
+	}
+	
+	public void setSpender(String spender) {
+		this.spender = spender;
 		this.notifyDataSetChanged();
 	}
 }

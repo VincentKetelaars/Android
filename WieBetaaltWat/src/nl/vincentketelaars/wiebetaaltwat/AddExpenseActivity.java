@@ -36,10 +36,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -154,6 +155,14 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private void initializeView() {
 		memberSpinner = (Spinner) findViewById(R.id.spinner_members);
+		memberSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				adapter.setSpender(members.get(arg2).getMember());	
+			}
+			
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
 		dateInputView = (Button) findViewById(R.id.add_expense_date_input);
 		dateInputView.setOnClickListener(this);
 		amountInputView = (EditText) findViewById(R.id.add_expense_amount_input);
