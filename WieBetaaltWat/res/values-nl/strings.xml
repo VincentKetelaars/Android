@@ -77,7 +77,6 @@
     <string name="groups">Groepen</string>
 
     <!-- Add Expense interactive -->
-    <string name="calc_incorrect_use">Verifieer dat je alleen maar een getal in het invoerveld hebt staan, en probeer opnieuw.</string>
     <string name="duplicate_data">Gedupliceerde data</string>
     <string name="duplicate_data_question">De gegevens die je nu wil versturen heb je reeds eerder verstuurd. Wil je hier mee doorgaan?</string>
     <string name="expense_add_success">Het toevoegen van de uitgave is gelukt!</string>

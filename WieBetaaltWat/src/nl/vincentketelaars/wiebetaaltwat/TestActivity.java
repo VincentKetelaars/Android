@@ -191,8 +191,6 @@ public class TestActivity extends Activity implements OnClickListener{
 				adapter.setAmount(input);
 				calc.cancel();
 			}
-		} else {
-			Resources.showToast(this, getResources().getString(R.string.calc_incorrect_use), Gravity.CENTER, Toast.LENGTH_SHORT);
 		}
 	}
 

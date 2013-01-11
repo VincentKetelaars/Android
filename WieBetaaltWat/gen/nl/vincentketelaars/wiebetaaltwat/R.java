@@ -140,26 +140,22 @@ public final class R {
         public static final int add_all=0x7f060036;
         public static final int amount=0x7f060035;
         public static final int app_name=0x7f060002;
-        public static final int back=0x7f060048;
+        public static final int back=0x7f060047;
         public static final int both=0x7f060027;
-        public static final int calc_failed=0x7f06004c;
-        public static final int calc_incorrect_amount=0x7f06003f;
-        public static final int calc_incorrect_count=0x7f060041;
-        public static final int calc_incorrect_date=0x7f06003e;
-        public static final int calc_incorrect_description=0x7f060040;
-        /**  Add Expense interactive 
- Add Expense interactive 
-         */
-        public static final int calc_incorrect_use=0x7f060039;
-        public static final int calc_input_empty=0x7f06004b;
+        public static final int calc_failed=0x7f06004b;
+        public static final int calc_incorrect_amount=0x7f06003e;
+        public static final int calc_incorrect_count=0x7f060040;
+        public static final int calc_incorrect_date=0x7f06003d;
+        public static final int calc_incorrect_description=0x7f06003f;
+        public static final int calc_input_empty=0x7f06004a;
         /**  Calculator interactive 
  Calculator interactive 
          */
-        public static final int calc_verify_input=0x7f06004a;
+        public static final int calc_verify_input=0x7f060049;
         /**  Calculator 
  Calculator 
          */
-        public static final int calculator=0x7f060045;
+        public static final int calculator=0x7f060044;
         /**  Add Expense 
  Add Expense 
          */
@@ -170,22 +166,25 @@ public final class R {
          */
         public static final int changeAccountButton=0x7f06000c;
         public static final int change_account_string=0x7f060014;
-        public static final int clear=0x7f060047;
+        public static final int clear=0x7f060046;
         public static final int clear_all=0x7f060037;
         public static final int date=0x7f060033;
         public static final int delete=0x7f06001a;
         public static final int delete_expense_unknown=0x7f06002f;
         public static final int deletion_success=0x7f06002c;
         public static final int description=0x7f060032;
-        public static final int duplicate_data=0x7f06003a;
-        public static final int duplicate_data_question=0x7f06003b;
-        public static final int expense_add_fail=0x7f060043;
-        public static final int expense_add_success=0x7f06003c;
-        public static final int expense_add_unknown=0x7f060042;
+        /**  Add Expense interactive 
+ Add Expense interactive 
+         */
+        public static final int duplicate_data=0x7f060039;
+        public static final int duplicate_data_question=0x7f06003a;
+        public static final int expense_add_fail=0x7f060042;
+        public static final int expense_add_success=0x7f06003b;
+        public static final int expense_add_unknown=0x7f060041;
         public static final int expense_list_null=0x7f06002b;
         public static final int expense_list_retrieved=0x7f060029;
-        public static final int expense_modify_fail=0x7f060044;
-        public static final int expense_modify_success=0x7f06003d;
+        public static final int expense_modify_fail=0x7f060043;
+        public static final int expense_modify_success=0x7f06003c;
         public static final int filter=0x7f06001d;
         public static final int filtered_none=0x7f06002d;
         public static final int filtered_on=0x7f06002e;
@@ -203,7 +202,7 @@ public final class R {
         public static final int login_request_failed=0x7f060015;
         public static final int member_list_retrieve_failed=0x7f06002a;
         public static final int modify=0x7f060019;
-        public static final int negative_numbers_not_allowed=0x7f060049;
+        public static final int negative_numbers_not_allowed=0x7f060048;
         /**  General 
  General 
          */
@@ -234,7 +233,7 @@ public final class R {
         public static final int spender=0x7f060025;
         public static final int submit=0x7f060031;
         public static final int try_again=0x7f06000b;
-        public static final int use=0x7f060046;
+        public static final int use=0x7f060045;
         public static final int usernameString=0x7f06000e;
         public static final int wbw_list_highest_balance_header=0x7f060020;
         public static final int wbw_list_lowest_balance_header=0x7f060021;

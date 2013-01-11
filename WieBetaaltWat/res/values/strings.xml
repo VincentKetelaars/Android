@@ -77,7 +77,6 @@
     <string name="groups">Groups</string>
 
     <!-- Add Expense interactive -->
-    <string name="calc_incorrect_use">Make sure that there is a single value in your input field, then try again.</string>
     <string name="duplicate_data">Duplicated data</string>
     <string name="duplicate_data_question">The same data that you are about to send, have previously been send already. Do you wish to continue?</string>
     <string name="expense_add_success">Adding the expense was successful!</string>

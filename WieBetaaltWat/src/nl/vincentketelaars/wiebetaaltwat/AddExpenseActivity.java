@@ -116,7 +116,6 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		}
 
 		progressDialog = new ProgressDialog(this);
-		memberSpinner.requestFocus();
 	}
 
 	/**
@@ -284,19 +283,17 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 			double input = calc.getResult();
 			if (input < 0) {
 				Resources.showToast(this, getResources().getString(R.string.negative_numbers_not_allowed), Gravity.CENTER, Toast.LENGTH_SHORT);
-			} else {
-				DecimalFormat df = new DecimalFormat();
-				df.setMinimumFractionDigits(2);
-				df.setMaximumFractionDigits(2);		
-				amountInputView.setText((df.format(input)).replace(",","."));
-				amountInputView.setSelection(df.format(input).length());
-				adapter.setAmount(input);
-				calc.cancel();
-			}
-		} else {
-			Resources.showToast(this, getResources().getString(R.string.calc_incorrect_use), Gravity.CENTER, Toast.LENGTH_SHORT);
+				input *= -1;
+			} 
+			DecimalFormat df = new DecimalFormat();
+			df.setMinimumFractionDigits(2);
+			df.setMaximumFractionDigits(2);		
+			amountInputView.setText((df.format(input)).replace(",","."));
+			amountInputView.setSelection(df.format(input).length());
+			adapter.setAmount(input);
+			calc.cancel();
 		}
-	}
+	} 
 
 	/**
 	 * This method creates a DatePickerDialog. It is initially set to the current date.
