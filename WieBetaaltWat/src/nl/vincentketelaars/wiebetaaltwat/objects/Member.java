@@ -9,30 +9,30 @@ public class Member implements Parcelable, Serializable {
 	private String member;
 	private double balance;
 	private int count;
-	private String id;
+	private int id;
 
 	public Member(String name) {
 		setMember(name);
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(0);
-		setId(null);
+		setId(-1);
 	}
 	
 	public Member(String name, int count) {
 		setMember(name);
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(count);
-		setId(null);
+		setId(-1);
 	}
 
 	public Member(String name, double amount) {
 		setMember(name);
 		setBalance(amount);
 		setCount(0);
-		setId(null);
+		setId(-1);
 	}
 	
-	public Member(String name, double amount, int count, String id) {
+	public Member(String name, double amount, int count, int id) {
 		setMember(name);
 		setBalance(amount);
 		setCount(count);
@@ -71,11 +71,11 @@ public class Member implements Parcelable, Serializable {
 		this.count = count;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -97,7 +97,7 @@ public class Member implements Parcelable, Serializable {
 		dest.writeString(member);
 		dest.writeDouble(balance);
 		dest.writeInt(count);
-		dest.writeString(id);
+		dest.writeInt(id);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Member implements Parcelable, Serializable {
 		member = in.readString();
 		balance = in.readDouble();
 		count = in.readInt();
-		id = in.readString();
+		id = in.readInt();
 	}
 
 	/**

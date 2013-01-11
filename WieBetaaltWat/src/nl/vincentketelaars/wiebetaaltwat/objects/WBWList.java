@@ -18,11 +18,12 @@ public class WBWList implements Parcelable, Serializable {
 	private Member high;
 	private Member low;
 	private ArrayList<Expense> expenses;
-	private ArrayList<Member> groupMembers;
+	private MemberGroup groupMembers;
 	private String lid;
 	private ArrayList<Integer> resultsPerPage;
 	private int pages;
 	private int numResults;
+	private ArrayList<MemberGroup> groupLists;
 	
 	public WBWList (String html, String list, Member me, Member high, Member low, String lid) {
 		setHTML(html);
@@ -38,7 +39,7 @@ public class WBWList implements Parcelable, Serializable {
 		setNumResults(0);
 	}
 		
-	public WBWList (String html, String list, Member me, Member high, Member low, ArrayList<Member> groupMembers, String lid) {
+	public WBWList (String html, String list, Member me, Member high, Member low, MemberGroup groupMembers, String lid) {
 		setHTML(html);
 		setListName(list);		
 		setMe(me);
@@ -104,11 +105,11 @@ public class WBWList implements Parcelable, Serializable {
 		this.expenses = expenses;
 	}
 
-	public ArrayList<Member> getGroupMembers() {
+	public MemberGroup getGroupMembers() {
 		return groupMembers;
 	}
 
-	public void setGroupMembers(ArrayList<Member> groupMembers) {
+	public void setGroupMembers(MemberGroup groupMembers) {
 		this.groupMembers = groupMembers;
 	}
 
@@ -152,6 +153,14 @@ public class WBWList implements Parcelable, Serializable {
 		this.listName = listName;
 	}
 
+	public ArrayList<MemberGroup> getGroupLists() {
+		return groupLists;
+	}
+
+	public void setGroupLists(ArrayList<MemberGroup> groupLists) {
+		this.groupLists = groupLists;
+	}
+
 	/**
 	 * This is a mandatory method with the parcelable interface
 	 */
@@ -170,11 +179,12 @@ public class WBWList implements Parcelable, Serializable {
 		dest.writeParcelable(high, 0);
 		dest.writeParcelable(low, 0);
 		dest.writeList(expenses);
-		dest.writeList(groupMembers);
+		dest.writeParcelable(groupMembers, 0);
 		dest.writeString(lid);
 		dest.writeList(resultsPerPage);
 		dest.writeInt(pages);
 		dest.writeInt(numResults);
+		dest.writeList(groupLists);
 	}
 	
 	/**
@@ -188,11 +198,12 @@ public class WBWList implements Parcelable, Serializable {
 		high = in.readParcelable(Member.class.getClassLoader());
 		low = in.readParcelable(Member.class.getClassLoader());
 		expenses = in.readArrayList(Expense.class.getClassLoader());
-		groupMembers= in.readArrayList(Member.class.getClassLoader());
+		groupMembers= in.readParcelable(MemberGroup.class.getClassLoader());
 		lid = in.readString();
 		resultsPerPage = in.readArrayList(Integer.class.getClassLoader());
 		pages = in.readInt();
 		numResults = in.readInt();
+		groupLists = in.readArrayList(MemberGroup.class.getClassLoader());
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.List;
 
 import nl.vincentketelaars.wiebetaaltwat.R;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,6 +138,22 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 	public void setAllCount(int count) {
 		for (Member m : getMembers()) {
 			m.setCount(count);
+		}
+		this.notifyDataSetChanged();
+	}
+	
+	/**
+	 * Set the count of all members in the list.
+	 * @param memberGroup
+	 */
+	public void setAllCount(MemberGroup memberGroup) {
+		for (Member m : getMembers()) {
+			for (Member n : memberGroup.getGroupMembers()) {
+				if (m.getId() == n.getId()) {
+					m.setCount(n.getCount());
+					break;
+				}
+			}
 		}
 		this.notifyDataSetChanged();
 	}

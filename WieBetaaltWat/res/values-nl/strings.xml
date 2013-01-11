@@ -74,6 +74,7 @@
     <string name="amount">Bedrag</string>
     <string name="add_all">Ieder 1x</string>
     <string name="clear_all">Ieder 0x</string>
+    <string name="groups">Groepen</string>
 
     <!-- Add Expense interactive -->
     <string name="calc_incorrect_use">Verifieer dat je alleen maar een getal in het invoerveld hebt staan, en probeer opnieuw.</string>

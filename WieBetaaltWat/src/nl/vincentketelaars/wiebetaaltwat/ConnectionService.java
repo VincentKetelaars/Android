@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 
 import org.apache.http.HeaderElement;
@@ -104,7 +105,7 @@ public class ConnectionService extends Service {
 	 * @param members
 	 * @return server result
 	 */
-	public String sendModifiedExpense(String tid, String lid, String spenderId, String description, String amount, String date, List<Member> members){
+	public String sendModifiedExpense(String tid, String lid, String spenderId, String description, String amount, String date, MemberGroup members){
 		List<NameValuePair> arguments = new ArrayList<NameValuePair>();
 		arguments = getExpenseArguments(lid, spenderId, description, amount, date, members);
 		arguments.add(new BasicNameValuePair("action", "mod_transaction"));
@@ -122,7 +123,7 @@ public class ConnectionService extends Service {
 	 * @param members
 	 * @return server result
 	 */
-	public String sendExpense(String lid, String spenderId, String description, String amount, String date, List<Member> members){
+	public String sendExpense(String lid, String spenderId, String description, String amount, String date, MemberGroup members){
 		List<NameValuePair> arguments = new ArrayList<NameValuePair>();
 		arguments = getExpenseArguments(lid, spenderId, description, amount, date, members);
 		arguments.add(new BasicNameValuePair("action", "add_transaction"));
@@ -139,14 +140,14 @@ public class ConnectionService extends Service {
 	 * @param members
 	 * @return arguments
 	 */
-	public List<NameValuePair> getExpenseArguments(String lid, String spenderId, String description, String amount, String date, List<Member> members){
+	public List<NameValuePair> getExpenseArguments(String lid, String spenderId, String description, String amount, String date, MemberGroup members){
 		List<NameValuePair> arguments = new ArrayList<NameValuePair>();
 		arguments.add(new BasicNameValuePair("lid", lid));
 		arguments.add(new BasicNameValuePair("payment_by", spenderId));
 		arguments.add(new BasicNameValuePair("description", description));
 		arguments.add(new BasicNameValuePair("amount", amount.replace(".",",")));
 		arguments.add(new BasicNameValuePair("date", date));
-		for (Member m : members) {
+		for (Member m : members.getGroupMembers()) {
 			arguments.add(new BasicNameValuePair("factor["+ m.getId() +"]", Integer.toString(m.getCount())));
 		}
 		arguments.add(new BasicNameValuePair("submit_add", "Verwerken"));

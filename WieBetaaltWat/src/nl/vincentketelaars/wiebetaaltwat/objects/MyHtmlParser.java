@@ -1,6 +1,7 @@
 package nl.vincentketelaars.wiebetaaltwat.objects;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -139,30 +140,58 @@ public class MyHtmlParser {
 
 	/**
 	 * This method parses a html page for the ID's of members.
-	 * @param result
+	 * @param memberGroup
 	 * @return
 	 */
-	public ArrayList<Member> parseAddExpense(ArrayList<Member> result) {			
-		if (result == null)
+	public MemberGroup parseAddExpense(MemberGroup memberGroup) {			
+		if (memberGroup == null)
 			return null;
 		if (!correctInputAddExpense())
 			return null;
 		Element paymentBy = doc.getElementById("payment_by");
 		Elements options = paymentBy.getElementsByTag("option");
 		for (int i = 0; i < options.size(); i++) {
-			String id = options.get(i).attr("value");
+			int id = Integer.parseInt(options.get(i).attr("value"));
 			String name = options.get(i).text();
-			for (Member m : result) {
+			for (Member m : memberGroup.getGroupMembers()) {
 				if (m.getMember().equals(name)) {
 					m.setId(id);				}
 			}
 		}
-		return result;
+		return memberGroup;
+	}
+	
+	public ArrayList<MemberGroup> parseGroupLists() {
+		if (!correctInputAddExpense())
+			return null;
+		ArrayList<MemberGroup> groupLists = new ArrayList<MemberGroup>();
+		Elements listGroupsClass = doc.getElementsByClass("list-groups");
+		Element listGroupsList = listGroupsClass.get(listGroupsClass.size()-1);
+		Elements groups = listGroupsList.getElementsByTag("a");
+		for (int x = 2; x < groups.size(); x++) {
+			String onclick = groups.get(x).attr("onclick");
+			System.out.println(onclick);
+			if (onclick != null) {
+				ArrayList<Member> members = new ArrayList<Member>();
+				Pattern p = Pattern.compile("\\d+");
+				Matcher m = p.matcher(onclick);
+				while (m.find()) {
+					int id =  Integer.parseInt(m.group());
+					m.find();
+					int count = Integer.parseInt(m.group());
+					members.add(new Member(null, Double.POSITIVE_INFINITY, count, id));
+				}
+				MemberGroup mg = new MemberGroup(members);
+				mg.setGroupName(groups.get(x).text());
+				groupLists.add(mg);
+			}
+		}
+		return groupLists;
 	}
 
 	/**
 	 * This method checks whether there is a class called status-error and logs those errors.
-	 * @return true if there are status erros, otherwise false
+	 * @return true if there are status errors, otherwise false
 	 */
 	public boolean hasErrors() {
 		if (doc == null)
@@ -234,7 +263,7 @@ public class MyHtmlParser {
 	 * @param html document
 	 * @return
 	 */
-	public ArrayList<Member> parseGroupMembers() {
+	public MemberGroup parseGroupMembers() {
 		if (!correctInputExpenses())
 			return null;
 		Element userBalance = doc.getElementById("user-balance");
@@ -251,7 +280,7 @@ public class MyHtmlParser {
 			double balance = Double.parseDouble(e.child(1).text().substring(2).replace(",", "."));
 			members.add(new Member(member, balance));
 		}		
-		return members;
+		return new MemberGroup(members);
 	}
 
 	/**

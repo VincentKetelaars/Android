@@ -44,22 +44,11 @@
                 android:text="@string/amount" >
             </TextView>
 
-            <RelativeLayout
+            <EditText
+                android:id="@+id/add_expense_amount_input"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <EditText
-                    android:id="@+id/add_expense_amount_input"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/calculator_button"
-                    android:inputType="numberDecimal" />
-
-                <Button
-                    android:id="@+id/calculator_button"
-                    style="@style/calculator_logo" />
-            </RelativeLayout>
+                android:inputType="numberDecimal" />
         </LinearLayout>
 
         <LinearLayout
@@ -145,8 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_all"
-            android:textSize="14dp" >
-        </Button>
+            android:textSize="14dp" />
     </LinearLayout>
 
     <ListView

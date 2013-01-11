@@ -8,6 +8,7 @@ import nl.vincentketelaars.wiebetaaltwat.adapters.ExpenseListAdapter.FilterStyle
 import nl.vincentketelaars.wiebetaaltwat.adapters.MemberAdapter;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
@@ -107,7 +108,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 			ArrayList<Expense> temp = parser.parseTheListOfExpenses();
 			if (temp != null)
 				wbwList.setExpenses(temp);
-			ArrayList<Member> members = parser.parseGroupMembers();
+			MemberGroup members = parser.parseGroupMembers();
 			if (members != null)
 				wbwList.setGroupMembers(members);
 			ArrayList<Integer> resultsPerPage = parser.getResultsPerPage();
@@ -167,11 +168,11 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 			return;
 		}
 		// Differentiate between Landscape and Portrait
-		MemberAdapter myMemberAdapter = new MemberAdapter(getApplicationContext(), R.layout.member_button_view , wbwList.getGroupMembers());
+		MemberAdapter myMemberAdapter = new MemberAdapter(getApplicationContext(), R.layout.member_button_view , wbwList.getGroupMembers().getGroupMembers());
 		OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1,	int arg2, long arg3) {
-				expenseListViewAdapter.setFilterName(wbwList.getGroupMembers().get(arg2).getMember());
+				expenseListViewAdapter.setFilterName(wbwList.getGroupMembers().getMember(arg2).getMember());
 				showFilteredMessage();
 			}
 		};
@@ -234,7 +235,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.add_expense_list:
-			if (!membersHaveId(wbwList.getGroupMembers())) {
+			if (!wbwList.getGroupMembers().membersHaveId()) {
 				if (!mService.isOnline()) {
 					showToast(getResources().getString(R.string.not_connected), Gravity.CENTER, Toast.LENGTH_SHORT);
 				} else {
@@ -388,14 +389,15 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private void addExpense(String back) {
 		if (back != null) {
 			MyHtmlParser parser = new MyHtmlParser(back);
-			ArrayList<Member> tempMembers = parser.parseAddExpense(wbwList.getGroupMembers());
-			if (tempMembers != null)
+			MemberGroup tempMembers = parser.parseAddExpense(wbwList.getGroupMembers());
+			ArrayList<MemberGroup> groupLists = parser.parseGroupLists();
+			if (tempMembers != null && groupLists != null) {
 				wbwList.setGroupMembers(tempMembers);
+				wbwList.setGroupLists(groupLists);
+			}
 		}
 		Intent intent = new Intent(this,AddExpenseActivity.class);
-		intent.putExtra("lid", wbwList.getLid()); 
-		intent.putExtra("Members", wbwList.getGroupMembers()); 
-		intent.putExtra("ExpenseList", wbwList.getExpenses());
+		intent.putExtra("wbwList", (Parcelable) wbwList);
 		intent.putExtra("Modify", false);
 		startActivityForResult(intent, addExpenseRequestCode);		
 	}
@@ -406,7 +408,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private void refresh(String back) {
 		MyHtmlParser parser = new MyHtmlParser(back);
 		ArrayList<Expense> eTemp = parser.parseTheListOfExpenses();
-		ArrayList<Member> mTemp = parser.parseGroupMembers();
+		MemberGroup mTemp = parser.parseGroupMembers();
 		if (eTemp != null) {
 			wbwList.setExpenses(eTemp);
 			if (mTemp != null) {
@@ -434,10 +436,10 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	 * This method sets the balances of me, high and low.
 	 */
 	private void resetMeHighLow() {
-		wbwList.setMe(wbwList.getGroupMembers().get(0));
+		wbwList.setMe(wbwList.getGroupMembers().getMember(0));
 		Member high = wbwList.getHighestMember();
 		Member low = wbwList.getLowestMember();
-		for (Member m : wbwList.getGroupMembers()) {
+		for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
 			if (high.getBalance() < m.getBalance())
 				high = m;
 			else if (low.getBalance() > m.getBalance())
@@ -483,7 +485,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 				Boolean success = b.getBoolean("Success");				
 				if (success != null && success) {
 					ArrayList<Expense> expenses = b.getParcelableArrayList("ExpenseList");
-					ArrayList<Member> members = b.getParcelableArrayList("MemberList");
+					MemberGroup members = b.getParcelable("MemberList");
 					if (expenses != null && members != null) {
 						wbwList.setExpenses(expenses);
 						wbwList.setGroupMembers(members);
@@ -510,7 +512,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.expense_list_modify:
-			if (!membersHaveId(wbwList.getGroupMembers())) {
+			if (!wbwList.getGroupMembers().membersHaveId()) {
 				if (!mService.isOnline()) {
 					showToast(getResources().getString(R.string.not_connected), Gravity.CENTER, Toast.LENGTH_SHORT);
 				} else {
@@ -536,14 +538,15 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private void modifyExpense(int pos, String back) {
 		if (back != null) {
 			MyHtmlParser parser = new MyHtmlParser(back);
-			ArrayList<Member> tempList = parser.parseAddExpense(wbwList.getGroupMembers());
-			if (tempList != null)
+			MemberGroup tempList = parser.parseAddExpense(wbwList.getGroupMembers());
+			ArrayList<MemberGroup> groupLists = parser.parseGroupLists();
+			if (tempList != null && groupLists != null) {
 				wbwList.setGroupMembers(tempList);
+				wbwList.setGroupLists(groupLists);
+			}
 		}
 		Intent intent = new Intent(this,AddExpenseActivity.class);
-		intent.putExtra("lid", wbwList.getLid()); 
-		intent.putExtra("Members", wbwList.getGroupMembers());
-		intent.putExtra("ExpenseList", wbwList.getExpenses());
+		intent.putExtra("wbwList", (Parcelable) wbwList);
 		intent.putExtra("Modify", true);
 		intent.putExtra("ExpensePosition", pos);
 		startActivityForResult(intent, addExpenseRequestCode);			
@@ -557,7 +560,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private void deleteExpense(int pos, String back) {		
 		MyHtmlParser parser = new MyHtmlParser(back);		
 		ArrayList<Expense> eTemp = parser.parseTheListOfExpenses();
-		ArrayList<Member> mTemp = parser.parseGroupMembers();
+		MemberGroup mTemp = parser.parseGroupMembers();
 		if (eTemp != null) {
 			boolean tidGone = true;
 			for (Expense e : eTemp)
@@ -738,20 +741,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		progressDialog.setMessage(getResources().getString(R.string.loading));
 		progressDialog.setCancelable(false);
 		progressDialog.show();
-	}
-
-	/**
-	 * This method checks whether each Member in the list has an id.
-	 * @return true if all members have an id, otherwise false
-	 */
-	private boolean membersHaveId(ArrayList<Member> memberList) {
-		for (Member m : memberList) {
-			if (m.getId() == null) {
-				return false;
-			}
-		}
-		return true;
-	}
+	}	
 
 	/**
 	 * Create and show a Toast.

@@ -52,7 +52,6 @@ public class TestActivity extends Activity implements OnClickListener{
 	private Button allTo0Button;
 	private Button bUse;
 	private Calculator calc;
-	private Button calculatorButton;
 	private Expense modifyExpense;
 	private String inputAmount;
 	private Toast toast;
@@ -129,9 +128,6 @@ public class TestActivity extends Activity implements OnClickListener{
 		submitButton.setOnClickListener(this);
 		allTo1Button.setOnClickListener(this);
 		allTo0Button.setOnClickListener(this);
-		calculatorButton = (Button) findViewById(R.id.calculator_button);
-		calculatorButton.setOnClickListener(this);
-		calculatorButton.setBackgroundResource(R.drawable.white_calc);
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = new Date();
@@ -170,9 +166,6 @@ public class TestActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.calc_use:
 			onCalcUseClicked();
-			break;
-		case R.id.calculator_button:
-			showCalculator();
 			break;
 		}
 	}

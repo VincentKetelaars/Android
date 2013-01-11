@@ -318,6 +318,18 @@ public class Calculator extends Dialog implements OnClickListener {
 			inputField.setSelection(posStart);
 		}
 	}
+	
+	/**
+	 * This method return whether the value of the input is ready to use.
+	 * If the value is not a double, reduction will be attempted. Again a check will be performed if the value can be used.
+	 * @return true if the value can be used, false otherwise.
+	 */
+	public boolean readyToUse() {
+		if (isDouble()) return true;
+		checkInputForCalculation(inputField.getText().toString());
+		if (isDouble()) return true;
+		return false;
+	}
 
 	/**
 	 * This method checks if the inputField contains an actual double value. If so it returns true, otherwise fals 

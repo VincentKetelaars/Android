@@ -9,10 +9,13 @@ import java.util.regex.Pattern;
 
 import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.AddMemberListAdapter;
+import nl.vincentketelaars.wiebetaaltwat.adapters.ExpenseListAdapter.FilterStyle;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
+import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 import nl.vincentketelaars.wiebetaaltwat.views.Calculator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,9 +56,7 @@ import android.widget.Toast;
 public class AddExpenseActivity extends Activity implements OnClickListener, OnDateSetListener {
 
 	// Global
-	private ArrayList<Member> members;
-	private ArrayList<Expense> expenseList;
-	private String lid;
+	private WBWList wbwList;
 	private String description;
 	private String date;
 	private String inputAmount;
@@ -67,7 +69,6 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private ListView listView;
 	private Spinner memberSpinner;
 	private EditText amountInputView;
-	private Button calculatorButton;
 	private EditText descriptionView;
 	private Button cancelButton;
 	private Button submitButton;
@@ -97,22 +98,15 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_expense_view);
-		members = getIntent().getExtras().getParcelableArrayList("Members");
-		expenseList = getIntent().getExtras().getParcelableArrayList("ExpenseList");
-		if (members == null) {
-			Log.i("AddExpense", "Members is null");
+		wbwList = getIntent().getExtras().getParcelable("wbwList");
+		if (wbwList == null || wbwList.getGroupLists() == null || wbwList.getGroupMembers() == null || wbwList.getLid() == null) {
+			Log.i("AddExpense", "WBWList is null");
 			onCancelClicked();
 		}	
-		lid = getIntent().getExtras().getString("lid");
 		modifyExpenseBool = getIntent().getExtras().getBoolean("Modify");
 		modifyExpensePosition = getIntent().getExtras().getInt("ExpensePosition");
-		if (expenseList == null) {
-			Log.i("AddExpense", "expenseList is null");
-			onCancelClicked();
-		} else {
-			if (modifyExpenseBool)
-				modifyExpense = expenseList.get(modifyExpensePosition);
-		}			
+		if (modifyExpenseBool)
+			modifyExpense = wbwList.getExpenses().get(modifyExpensePosition);
 		bindToService();
 		initializeView();
 		setListView();
@@ -122,6 +116,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		}
 
 		progressDialog = new ProgressDialog(this);
+		memberSpinner.requestFocus();
 	}
 
 	/**
@@ -129,7 +124,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private void setModifyExpenseValues() {
 		for (Member p : modifyExpense.getParticipants()) {
-			for (Member m : members) {
+			for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
 				if (m.getMember().equals(p.getMember())) {
 					m.setCount(p.getCount());
 				}
@@ -138,14 +133,14 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		amountInputView.setText(Double.toString(modifyExpense.getAmount()));
 		adapter.setAmount(modifyExpense.getAmount());
 		int index = 0;
-		for (int i = 0; i < members.size(); i++) {
-			if (modifyExpense.getSpender().equals(members.get(i).getMember()))
+		for (int i = 0; i < wbwList.getGroupMembers().getGroupMembers().size(); i++) {
+			if (modifyExpense.getSpender().equals(wbwList.getGroupMembers().getMember(i).getMember()))
 				index = i;
 		}
 		memberSpinner.setSelection(index, true);
 		dateInputView.setText(modifyExpense.getDate());
 		descriptionView.setText(modifyExpense.getDescription());
-		adapter.setMembers(members);
+		adapter.setMembers(wbwList.getGroupMembers().getGroupMembers());
 		submitButton.setVisibility(View.GONE);
 		modifyButton.setVisibility(View.VISIBLE);
 	}
@@ -157,9 +152,9 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		memberSpinner = (Spinner) findViewById(R.id.spinner_members);
 		memberSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				adapter.setSpender(members.get(arg2).getMember());	
+				adapter.setSpender(wbwList.getGroupMembers().getMember(arg2).getMember());	
 			}
-			
+
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
@@ -167,7 +162,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		dateInputView.setOnClickListener(this);
 		amountInputView = (EditText) findViewById(R.id.add_expense_amount_input);
 		amountInputView.addTextChangedListener(new TextWatcher() {			
-			
+
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String input = s.toString();
 				int index = input.indexOf('.');
@@ -180,10 +175,10 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 					}
 				}	
 			}			
-			
+
 			public void beforeTextChanged(CharSequence s, int start, int count,	int after) {
 			}
-			
+
 			public void afterTextChanged(Editable s) {
 				checkAmountInput();				
 			}
@@ -211,9 +206,6 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		allTo1Button.setOnClickListener(this);
 		allTo0Button.setOnClickListener(this);		
 
-		calculatorButton = (Button) findViewById(R.id.calculator_button);
-		calculatorButton.setOnClickListener(this);
-
 		setDateToday();
 	}
 
@@ -231,7 +223,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private void setListView() {		
 		listView = (ListView) findViewById(R.id.add_members_view);
-		adapter = new AddMemberListAdapter(this, R.layout.add_expense_member_list, members);
+		adapter = new AddMemberListAdapter(this, R.layout.add_expense_member_list, wbwList.getGroupMembers().getGroupMembers());
 		listView.setAdapter(adapter); 
 	}
 
@@ -240,7 +232,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private void setMembersSpinner() {
 		ArrayList<String> names = new ArrayList<String>();
-		for (Member m : members) {
+		for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
 			names.add(m.getMember());
 		}
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, names);
@@ -271,9 +263,6 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		case R.id.calc_use:
 			onCalcUseClicked();
 			break;
-		case R.id.calculator_button:
-			showCalculator();
-			break;
 		}
 	}
 
@@ -291,7 +280,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * This method calls the Calculator for the result, sets that result in the amountInputView and cancels then the dialog.
 	 */
 	private void onCalcUseClicked() {
-		if (calc.isDouble()) {
+		if (calc.readyToUse()) {
 			double input = calc.getResult();
 			if (input < 0) {
 				Resources.showToast(this, getResources().getString(R.string.negative_numbers_not_allowed), Gravity.CENTER, Toast.LENGTH_SHORT);
@@ -326,7 +315,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private void onModifyClicked() {
 		if(validDate() && validAmount() && validCount() && validDescription()) {
-			if (lid != null && members != null) {
+			if (wbwList.getLid() != null && wbwList.getGroupMembers() != null) {
 				new AsyncAddExpense().execute(new Integer[]{EXPENSE_MODIFY});				
 			} else {
 				Log.i("AddExpense", "Either lid or members is null for modify");
@@ -339,16 +328,16 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private void onModifyReturned(String back) {
 		MyHtmlParser parser = new MyHtmlParser(back);
 		ArrayList<Expense> eTemp = parser.parseTheListOfExpenses();
-		ArrayList<Member> mTemp = parser.parseGroupMembers();
-		if (eTemp != null && expenseList != null) {
+		MemberGroup mTemp = parser.parseGroupMembers();
+		if (eTemp != null && wbwList.getExpenses() != null) {
 			if (expenseEqualsDataJustSend(eTemp.get(0))) {
-				expenseList = eTemp;
+				wbwList.setExpenses(eTemp);
 				modifyExpenseSuccesful(mTemp);
 			} else {	
 				String message = parser.statusNoticeMessage();
 				if (message.contains("De invoer is gewijzigd.")) {
 					Log.i("AddExpense", "Modify expense is not recognised");
-					expenseList = eTemp;
+					wbwList.setExpenses(eTemp);
 					modifyExpenseSuccesful(mTemp);
 				} else {
 					expenseUnsuccesful(message, EXPENSE_MODIFY);
@@ -365,7 +354,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private void onAddClicked() {
 		if(validDate() && validAmount() && validCount() && validDescription()) {
 			if (!expenseEqualsDataJustSend(justSend)) {
-				if (lid != null && members != null) {
+				if (wbwList.getLid() != null && wbwList.getGroupMembers() != null) {
 					if (!mService.isOnline()) {
 						Resources.showToast(this, getResources().getString(R.string.not_connected), Gravity.CENTER, Toast.LENGTH_SHORT);
 					} else {
@@ -416,9 +405,9 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 			return false;
 		if (base.getDate().equals(date) && 
 				base.getDescription().equals(descriptionRevision(description)) && 
-				base.getSpender().equals(members.get(memberSpinner.getSelectedItemPosition()).getMember()) && 
+				base.getSpender().equals(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getMember()) && 
 				Math.abs(base.getAmount()-Double.parseDouble(inputAmount))<0.01 &&
-				participantsHaveEqualCount(members, base.getParticipants())) {			
+				participantsHaveEqualCount(wbwList.getGroupMembers(), base.getParticipants())) {			
 			return true;
 		}
 		return false;
@@ -439,8 +428,8 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * @param second
 	 * @return if both MemberLists have for each member the same count, it returns true. False otherwise.
 	 */
-	public boolean participantsHaveEqualCount(ArrayList<Member> first, ArrayList<Member> second) {
-		for (Member f : first) {
+	public boolean participantsHaveEqualCount(MemberGroup first, ArrayList<Member> second) {
+		for (Member f : first.getGroupMembers()) {
 			for (Member s : second) {
 				if (s.getMember().equals(f.getMember())) {
 					if (s.getCount() != f.getCount()) {
@@ -460,16 +449,16 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private void onAddReturned(String back) {
 		MyHtmlParser parser = new MyHtmlParser(back);
 		ArrayList<Expense> eTemp = parser.parseTheListOfExpenses();
-		ArrayList<Member> mTemp = parser.parseGroupMembers();
-		if (eTemp != null && expenseList != null) {
+		MemberGroup mTemp = parser.parseGroupMembers();
+		if (eTemp != null && wbwList.getExpenses() != null) {
 			if (expenseEqualsDataJustSend(eTemp.get(0))) {
-				expenseList = eTemp;
+				wbwList.setExpenses(eTemp);
 				addExpenseSuccesful(mTemp);
 			} else {
 				String message = parser.statusNoticeMessage();
 				if (message.contains("De invoer is toegevoegd aan de lijst.")) {
 					Log.i("AddExpense", "Add expense is not recognised");
-					expenseList = eTemp;
+					wbwList.setExpenses(eTemp);
 					addExpenseSuccesful(mTemp);
 				} else {	
 					expenseUnsuccesful(parser.statusNoticeMessage(), EXPENSE_ADD);
@@ -497,7 +486,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	/**
 	 * This method is called if the response from the server, gives an successful message to adding a new expense.
 	 */
-	private void addExpenseSuccesful(ArrayList<Member> mTemp) {
+	private void addExpenseSuccesful(MemberGroup mTemp) {
 		setResultIntent(true, mTemp);
 		justSend = new Expense(getSpenderId(), description, Double.parseDouble(inputAmount), date, null, null, null);
 		resetToInitialView();
@@ -507,7 +496,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	/**
 	 * This method is called if the response from the server, gives an successful message to modifying an expense.
 	 */
-	private void modifyExpenseSuccesful(ArrayList<Member> mTemp) {
+	private void modifyExpenseSuccesful(MemberGroup mTemp) {
 		setResultIntent(true, mTemp);
 		resetToInitialView();
 		submitButton.setVisibility(View.VISIBLE);
@@ -520,7 +509,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * @return Id.
 	 */
 	private String getSpenderId() {
-		return members.get(memberSpinner.getSelectedItemPosition()).getId();
+		return Integer.toString(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getId());
 	}
 
 	/**
@@ -541,7 +530,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * @return true if this is true.
 	 */
 	private boolean validCount() {
-		for (Member m : members) {
+		for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
 			if (m.getCount() > 0)
 				return true;
 		}
@@ -674,11 +663,11 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * This intent is send back to update the ExpenseList.
 	 * @param success
 	 */
-	private void setResultIntent(boolean success, ArrayList<Member> mTemp) {		
+	private void setResultIntent(boolean success, MemberGroup mTemp) {		
 		Intent resultIntent = new Intent();
 		resultIntent.putExtra("Success", success);
-		resultIntent.putExtra("ExpenseList", expenseList);
-		resultIntent.putExtra("MemberList", mTemp);
+		resultIntent.putExtra("ExpenseList", wbwList.getExpenses());
+		resultIntent.putExtra("MemberList", (Parcelable) mTemp);
 		setResult(Activity.RESULT_OK, resultIntent);
 	}
 
@@ -706,9 +695,9 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		protected String doInBackground(Integer... i) {
 			add = i[0];
 			if (add == EXPENSE_ADD)
-				return mService.sendExpense(lid, getSpenderId(), description, inputAmount, date, members);
+				return mService.sendExpense(wbwList.getLid(), getSpenderId(), description, inputAmount, date, wbwList.getGroupMembers());
 			else if (add == EXPENSE_MODIFY)
-				return mService.sendModifiedExpense(modifyExpense.getTid(), lid, getSpenderId(), description, inputAmount, date, members);
+				return mService.sendModifiedExpense(modifyExpense.getTid(), wbwList.getLid(), getSpenderId(), description, inputAmount, date, wbwList.getGroupMembers());
 			return null;
 		}
 
@@ -731,16 +720,14 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		progressDialog.setCancelable(false);
 		progressDialog.show();
 	}
-	
+
 	/**
 	 * This method method is called everytime the options menu is opened. It shows the menu defined in the XML file.
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		if (Build.VERSION.SDK_INT >= 11) {
-			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.add_expense_options_menu, menu);
-		}
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.add_expense_options_menu, menu);
 		return true;
 	}
 
@@ -754,8 +741,28 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		case R.id.calculator_option:
 			showCalculator();
 			return true;
+		case R.id.group_option:
+			showGroupLists();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void showGroupLists() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.groups));
+		final ArrayList<String> results = new ArrayList<String>();
+		for (MemberGroup m : wbwList.getGroupLists()) {
+			results.add(m.getGroupName());
+		}
+		final CharSequence[] items = results.toArray(new CharSequence[results.size()]);
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				adapter.setAllCount(wbwList.getGroupLists().get(item));
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();	
 	}
 }
