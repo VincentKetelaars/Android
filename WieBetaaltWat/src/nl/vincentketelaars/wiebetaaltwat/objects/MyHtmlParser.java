@@ -170,7 +170,6 @@ public class MyHtmlParser {
 		Elements groups = listGroupsList.getElementsByTag("a");
 		for (int x = 2; x < groups.size(); x++) {
 			String onclick = groups.get(x).attr("onclick");
-			System.out.println(onclick);
 			if (onclick != null) {
 				ArrayList<Member> members = new ArrayList<Member>();
 				Pattern p = Pattern.compile("\\d+");
@@ -236,6 +235,23 @@ public class MyHtmlParser {
 		if (title != null && title.equals("Wiebetaaltwat.nl : Invoer"))
 			return true;
 		Log.i("AddExpense", "Retrieved the wrong page");
+		return false;
+	}
+	
+	/**
+	 * This method checks the input string for html code. It checks if it has the correct title of the ExpenseList.
+	 * @param input
+	 * @return true if code checks out, otherwise return false
+	 */
+	public boolean correctParticipantsPage() {
+		if (!correctInput())
+			return false;
+		if (hasErrors())
+			return false;
+		String title = retrieveTitle();
+		if (title != null && title.equals("Wiebetaaltwat.nl : Deelnemers"))
+			return true;
+		Log.i("Participants", "Retrieved the wrong page");
 		return false;
 	}
 
@@ -387,6 +403,30 @@ public class MyHtmlParser {
 			return results;
 		}
 		return null;
+	}
+	
+	/**
+	 * This method parses the participant page for all participants (active or not)
+	 * @return MemberGroup of participants
+	 */
+	public MemberGroup getListParticipants() {
+		if (!correctParticipantsPage())
+			return null;
+		ArrayList<Member> result = new ArrayList<Member>();
+		Elements membersAdmin = doc.getElementsByClass("members-admin");
+		Elements tr = membersAdmin.get(0).getElementsByTag("tr");
+		for (int i = 1; i < tr.size(); i++) {
+			int active = 0;
+			if (tr.get(i).hasClass("active"))
+				active = 1;
+			Elements input = tr.get(i).getElementsByTag("input");
+			int id = Integer.parseInt(input.get(0).attr("value"));
+			String name = input.get(3).attr("value");
+			String email = input.get(4).attr("value");
+			Member member = new Member(name, 0, email, id, active);
+			result.add(member);
+		}		
+		return new MemberGroup(result);
 	}
 
 	/**

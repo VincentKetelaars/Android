@@ -45,6 +45,16 @@
     <string name="wbw_list_highest_balance_header">Highest balance</string>
     <string name="wbw_list_lowest_balance_header">Lowest balance</string>
 
+    <!-- Invite -->
+    <string name="invite_participant">Invite participant</string>
+    <string name="invite">Invite</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="invitation">Invite a new participant!</string>
+    <string name="invitation_fail">Inviting PARTICIPANT has failed.</string>
+    <string name="invitation_success">PARTICIPANT is invited!</string>
+    <string name="invitation_already_participant">PARTICIPANT is already a participant!</string>
+
     <!-- WBWList Interactief -->
     <string name="wbw_list_retrieve_failed">This list is not available.</string>
     <string name="wbw_list_null">The overview could not be retrieved. Please try and refresh.</string>

@@ -46,6 +46,20 @@ public class MemberGroup implements Parcelable, Serializable{
 		}
 		return null;
 	}
+	
+	/**
+	 * The first member with this email is returned, otherwise null.
+	 * @param name
+	 * @return Member with this name
+	 */
+	public Member getMemberByEmail(String email) {
+		for (Member m : groupMembers) {
+			if (m.getEmail().equals(email)) {
+				return m;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * This method checks whether each Member in the list has an id.
@@ -58,6 +72,10 @@ public class MemberGroup implements Parcelable, Serializable{
 			}
 		}
 		return true;
+	}
+	
+	public void addMember(Member member) {
+		groupMembers.add(member);
 	}
 
 	public ArrayList<Member> getGroupMembers() {

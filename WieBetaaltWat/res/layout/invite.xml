@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/invite_invitation"
+        style="@style/invite_textview"
+        android:text="@string/invitation" />
+
+    <TextView
+        android:id="@+id/invite_name"
+        style="@style/invite_textview"
+        android:text="@string/name" />
+
+    <EditText
+        android:id="@+id/invite_editname"
+        style="@style/invite_edittext"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/invite_email"
+        style="@style/invite_textview"
+        android:text="@string/email" />
+
+    <EditText
+        android:id="@+id/invite_editemail"
+        style="@style/invite_edittext"
+        android:inputType="textEmailAddress" />
+
+</LinearLayout>

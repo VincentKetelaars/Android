@@ -10,12 +10,16 @@ public class Member implements Parcelable, Serializable {
 	private double balance;
 	private int count;
 	private int id;
+	private String email;
+	private int activated; // -1 is not initialized, 0 is not activated, 1 is activated
 
 	public Member(String name) {
 		setMember(name);
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(0);
 		setId(-1);
+		setEmail(null);
+		setActivated(-1);
 	}
 	
 	public Member(String name, int count) {
@@ -23,6 +27,8 @@ public class Member implements Parcelable, Serializable {
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(count);
 		setId(-1);
+		setEmail(null);
+		setActivated(-1);
 	}
 
 	public Member(String name, double amount) {
@@ -30,6 +36,17 @@ public class Member implements Parcelable, Serializable {
 		setBalance(amount);
 		setCount(0);
 		setId(-1);
+		setEmail(null);
+		setActivated(-1);
+	}
+	
+	public Member(String name, double amount, String email, int id, int activated) {
+		setMember(name);
+		setBalance(amount);
+		setCount(0);
+		setId(id);
+		setEmail(email);
+		setActivated(activated);
 	}
 	
 	public Member(String name, double amount, int count, int id) {
@@ -37,6 +54,8 @@ public class Member implements Parcelable, Serializable {
 		setBalance(amount);
 		setCount(count);
 		setId(id);
+		setEmail(null);
+		setActivated(-1);
 	}
 
 	/**
@@ -98,6 +117,8 @@ public class Member implements Parcelable, Serializable {
 		dest.writeDouble(balance);
 		dest.writeInt(count);
 		dest.writeInt(id);
+		dest.writeString(email);
+		dest.writeInt(activated);
 	}
 
 	/**
@@ -109,6 +130,24 @@ public class Member implements Parcelable, Serializable {
 		balance = in.readDouble();
 		count = in.readInt();
 		id = in.readInt();
+		email = in.readString();
+		activated = in.readInt();
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int isActivated() {
+		return activated;
+	}
+
+	public void setActivated(int activated) {
+		this.activated = activated;
 	}
 
 	/**

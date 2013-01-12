@@ -302,4 +302,14 @@ public class ConnectionService extends Service {
 	    }
 	    return false;
 	}
+	
+	public String sendInvitation(String name, String email, String lid) {
+		List<NameValuePair> arguments = new ArrayList<NameValuePair>();
+		arguments.add(new BasicNameValuePair("page", "members"));
+		arguments.add(new BasicNameValuePair("lid", lid));
+		arguments.add(new BasicNameValuePair("action", "add_member"));
+		arguments.add(new BasicNameValuePair("member_alias", name));
+		arguments.add(new BasicNameValuePair("email", email));
+		return sendHttpPost(arguments);
+	}
 }

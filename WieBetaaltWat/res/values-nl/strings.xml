@@ -44,7 +44,17 @@
     <string name="wbw_list_my_balance_header">Mijn stand</string>
     <string name="wbw_list_highest_balance_header">Hoogste stand</string>
     <string name="wbw_list_lowest_balance_header">Laagste stand</string>
-
+    
+    <!-- Invite -->
+    <string name="invite_participant">Deelnemer uitnodigen</string>
+    <string name="invite">Nodig uit</string>
+    <string name="name">Naam</string>
+    <string name="email">Email</string>
+    <string name="invitation">Nodig een nieuwe deelnemer uit!</string>
+    <string name="invitation_fail">PARTICIPANT uitnodigen is mislukt.</string>
+    <string name="invitation_success">PARTICIPANT is uitgenodigd!</string>
+    <string name="invitation_already_participant">PARTICIPANT is al een deelnemer!</string>
+    
     <!-- WBWList Interactief -->
     <string name="wbw_list_retrieve_failed">Deze lijst is niet beschikbaar.</string>
     <string name="wbw_list_null">Het overzicht kon niet worden opgehaald. Probeer opnieuw in te loggen.</string>

@@ -12,6 +12,7 @@ import java.util.List;
 
 import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.WBWListAdapter;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
@@ -31,15 +32,20 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -58,6 +64,11 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 	private Button refreshButton;
 	private ProgressDialog progressDialog;
 	protected Context mContext = this;
+
+	// Invite
+	protected String inviteName;
+	protected String inviteEmail;
+	private int invitePosition;
 
 	// Service
 	private boolean mBound;
@@ -119,6 +130,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 				}
 			}
 		});
+		registerForContextMenu(listView);
 	}
 
 	/**
@@ -400,6 +412,24 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		}		
 	}
 
+	/**
+	 * This private class, makes sure that the network connections are made on a separate thread.
+	 * @author Vincent
+	 *
+	 */
+	private class AsyncInvitation extends AsyncTask<String, Void, String> {
+
+		protected String doInBackground(String... s) {
+			return mService.sendInvitation(s[0], s[1], s[2]);
+		}
+
+		protected void onPostExecute(String back) {
+			if (progressDialog != null && progressDialog.isShowing())
+				progressDialog.dismiss();
+			handleSentInvitation(back);
+		}		
+	}
+
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.refresh_button:
@@ -424,7 +454,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		progressDialog.setCancelable(false);
 		progressDialog.show();
 	}	
-	
+
 	/**
 	 * This method method is called everytime the options menu is opened. It shows the menu defined in the XML file.
 	 */
@@ -454,6 +484,75 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void sendInvitation() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.invite_participant));
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View dialogView = inflater.inflate(R.layout.invite, null);
+		builder.setView(dialogView);
+		final EditText editName = (EditText) dialogView.findViewById(R.id.invite_editname);
+		final EditText editEmail = (EditText) dialogView.findViewById(R.id.invite_editemail);
+		builder.setPositiveButton(R.string.invite, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				inviteName = editName.getText().toString();
+				inviteEmail = editEmail.getText().toString();
+				WBWList wbwList = WBWLists.get(invitePosition);
+				String lid = wbwList.getLid();
+				showProgressDialog();        		
+				new AsyncInvitation().execute(new String[]{inviteName, inviteEmail, lid});
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	public void handleSentInvitation(String back) {
+		MyHtmlParser parser = new MyHtmlParser(back);
+		MemberGroup participants = parser.getListParticipants();
+		String notice = parser.statusNoticeMessage();
+		String response = getResources().getString(R.string.invitation_fail);
+		if (participants != null && participants.getMemberByEmail(inviteEmail) != null) {
+			if (notice != null && notice.contains("Deze gebruiker is al deelnemer van deze lijst!")) {
+				response = getResources().getString(R.string.invitation_already_participant);
+			} else {
+				if (WBWLists.get(invitePosition).getGroupMembers() != null)
+					WBWLists.get(invitePosition).getGroupMembers().addMember(participants.getMember(inviteName));
+				response = getResources().getString(R.string.invitation_success);
+			}
+		} 
+		response = response.replace("PARTICIPANT", inviteName);
+		Resources.showToast(this, response, Gravity.CENTER, Toast.LENGTH_SHORT);
+	}
+
+	/**
+	 * Create context menu.
+	 */
+	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {		
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.wbwlist_context_menu, menu);
+	}
+
+	/**
+	 * This method is called when there is a click on the context menu items.
+	 */
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.wbw_list_invite:
+			invitePosition = info.position;
+			sendInvitation();
+			return true;
+		default:
+			return super.onContextItemSelected(item);
 		}
 	}
 }
