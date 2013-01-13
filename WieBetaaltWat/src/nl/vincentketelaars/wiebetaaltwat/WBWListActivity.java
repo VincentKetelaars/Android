@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.WBWListAdapter;
@@ -31,6 +33,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,6 +50,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -69,6 +74,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 	protected String inviteName;
 	protected String inviteEmail;
 	private int invitePosition;
+	private AlertDialog alert;
 
 	// Service
 	private boolean mBound;
@@ -487,18 +493,23 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		}
 	}
 
+	/**
+	 * Create AlertDialog that takes a name and emailaddress. It is then sent via the AsyncInvitation.
+	 */
 	public void sendInvitation() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getResources().getString(R.string.invite_participant));
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
 		View dialogView = inflater.inflate(R.layout.invite, null);
 		builder.setView(dialogView);
-		final EditText editName = (EditText) dialogView.findViewById(R.id.invite_editname);
+		final EditText editName = (EditText) dialogView.findViewById(R.id.invite_editname);		
+		editName.addTextChangedListener(new NameTextWatcher());
 		final EditText editEmail = (EditText) dialogView.findViewById(R.id.invite_editemail);
+		editEmail.addTextChangedListener(new EmailTextWatcher());
 		builder.setPositiveButton(R.string.invite, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				inviteName = editName.getText().toString();
-				inviteEmail = editEmail.getText().toString();
+				inviteName = editName.getText().toString().trim();
+				inviteEmail = editEmail.getText().toString().trim();
 				WBWList wbwList = WBWLists.get(invitePosition);
 				String lid = wbwList.getLid();
 				showProgressDialog();        		
@@ -510,10 +521,14 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 				dialog.cancel();
 			}
 		});
-		AlertDialog alert = builder.create();
+		alert = builder.create();
 		alert.show();
 	}
 
+	/**
+	 * Determine whether sending an invitation has been successful.
+	 * @param back
+	 */
 	public void handleSentInvitation(String back) {
 		MyHtmlParser parser = new MyHtmlParser(back);
 		MemberGroup participants = parser.getListParticipants();
@@ -554,5 +569,45 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		default:
 			return super.onContextItemSelected(item);
 		}
+	}
+
+	/**
+	 * TextWatcher that checks whether the text corresponds to an actual email.
+	 * If true, the Image Resource is set to the green check.
+	 * @author Vincent
+	 *
+	 */
+	private class EmailTextWatcher implements TextWatcher {
+		public void afterTextChanged(Editable s) {
+			Pattern p = Pattern.compile("\\w+\\@\\w+\\.[A-Za-z]+");
+			Matcher m = p.matcher(s.toString().trim());
+			if (m.find()) {
+				if (m.group().equals(s.toString().trim())) {
+					((ImageView) alert.findViewById(R.id.invite_check_email)).setImageResource(R.drawable.green_check);
+				}
+			} else {
+				((ImageView) alert.findViewById(R.id.invite_check_email)).setImageResource(R.drawable.red_cross);
+			}
+		}
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+		public void onTextChanged(CharSequence s, int start, int before, int count) {}		
+	}
+
+	/**
+	 * TextWatcher that checks whether the text corresponds to an actual nickname.
+	 * If true, the Image Resource is set to the green check.
+	 * @author Vincent
+	 *
+	 */
+	private class NameTextWatcher implements TextWatcher {
+		public void afterTextChanged(Editable s) {
+			if (s.toString().trim().length() >= 1) {
+				((ImageView) alert.findViewById(R.id.invite_check_name)).setImageResource(R.drawable.green_check);
+			} else {
+				((ImageView) alert.findViewById(R.id.invite_check_name)).setImageResource(R.drawable.red_cross);
+			}		
+		}
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+		public void onTextChanged(CharSequence s, int start, int before, int count) {}		
 	}
 }

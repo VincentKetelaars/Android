@@ -54,6 +54,9 @@
     <string name="invitation_fail">Inviting PARTICIPANT has failed.</string>
     <string name="invitation_success">PARTICIPANT is invited!</string>
     <string name="invitation_already_participant">PARTICIPANT is already a participant!</string>
+    <string name="invitation_invalid">Either the name or the email has invalid input.</string>
+    <string name="green_check">green check</string>
+    <string name="red_cross">red cross</string>
 
     <!-- WBWList Interactief -->
     <string name="wbw_list_retrieve_failed">This list is not available.</string>

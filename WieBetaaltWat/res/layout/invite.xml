@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    
+
     <TextView
         android:id="@+id/invite_invitation"
         style="@style/invite_textview"
@@ -14,19 +14,53 @@
         style="@style/invite_textview"
         android:text="@string/name" />
 
-    <EditText
-        android:id="@+id/invite_editname"
-        style="@style/invite_edittext"
-        android:inputType="text" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/invite_editname"
+            style="@style/invite_edittext"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/invite_check_name"
+            android:inputType="text" />
+
+        <ImageView
+            android:id="@+id/invite_check_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/green_check"
+            android:src="@drawable/red_cross"
+            android:visibility="visible" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/invite_email"
         style="@style/invite_textview"
         android:text="@string/email" />
 
-    <EditText
-        android:id="@+id/invite_editemail"
-        style="@style/invite_edittext"
-        android:inputType="textEmailAddress" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/invite_editemail"
+            style="@style/invite_edittext"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/invite_check_email"
+            android:inputType="textEmailAddress" />
+
+        <ImageView
+            android:id="@+id/invite_check_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/green_check"
+            android:src="@drawable/red_cross"
+            android:visibility="visible" />
+    </RelativeLayout>
 
 </LinearLayout>
