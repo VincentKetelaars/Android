@@ -2,10 +2,12 @@ timeout networking (fixed?)
 
 use mBound (relevant?)
 
-set expenselistactivity horizontal and vertical listview (don't know how, without making exact)
-
-Calculator negative numbers
-
 landscape mode
 
-Grote van de optionlijsten verkleinen..
+Help page (include pictures and references?)
+
+Register page
+
+delete and edit participant
+
+make offline access better
