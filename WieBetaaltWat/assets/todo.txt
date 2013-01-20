@@ -10,4 +10,6 @@ Register page
 
 delete and edit participant
 
-make offline access better
+make offline access better (access everything)
+
+create new list
