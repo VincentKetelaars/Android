@@ -114,4 +114,13 @@
     <string name="calc_input_empty">U moet iets invullen voordat er iets kan worden berekend.</string>
     <string name="calc_failed">Het berekenen van deze invoer is mislukt. Contacteer aub de beheerder van de app.</string>
 
+    <!-- Modify member -->
+    <string name="delete_member">Verwijder deelnemer</string>
+    <string name="modify_member">Bewerk deelnemer</string>
+
+    <!-- Add Group -->
+    <string name="add_group">Voeg groep toe..</string>
+    <string name="add_group_title">Voeg nieuwe groep toe</string>
+    <string name="group_name">Groepsnaam</string>
+
 </resources>

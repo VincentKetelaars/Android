@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.AddMemberListAdapter;
-import nl.vincentketelaars.wiebetaaltwat.adapters.ExpenseListAdapter.FilterStyle;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
@@ -28,7 +27,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -36,6 +34,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -753,13 +752,36 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		for (MemberGroup m : wbwList.getGroupLists()) {
 			results.add(m.getGroupName());
 		}
+		results.add(getResources().getString(R.string.add_group));
 		final CharSequence[] items = results.toArray(new CharSequence[results.size()]);
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
-				adapter.setAllCount(wbwList.getGroupLists().get(item));
+				if (results.get(item).equals(getResources().getString(R.string.add_group))) {
+					createAddGroupDialog();
+				} else {
+					adapter.setAllCount(wbwList.getGroupLists().get(item));
+				}
 			}
 		});
 		AlertDialog alert = builder.create();
 		alert.show();	
+	}
+
+	protected void createAddGroupDialog() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.add_group_title));
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View dialogView = inflater.inflate(R.layout.add_group, null);
+		builder.setView(dialogView);
+		builder.setPositiveButton(getResources().getString(R.string.add), new DialogInterface.OnClickListener() {			
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		});
+		builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {			
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();				
+			}
+		});
 	}
 }

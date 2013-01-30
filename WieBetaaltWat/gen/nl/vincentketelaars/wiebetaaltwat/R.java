@@ -17,6 +17,7 @@ public final class R {
         public static final int bright_orange=0x7f050000;
         public static final int dark_gray=0x7f050002;
         public static final int mild_gray=0x7f050001;
+        public static final int red=0x7f050003;
     }
     public static final class drawable {
         public static final int green_check=0x7f020000;
@@ -41,104 +42,114 @@ public final class R {
         public static final int add_expense_date_input=0x7f090008;
         public static final int add_expense_date_linearlayout=0x7f090004;
         public static final int add_expense_date_text=0x7f090007;
-        public static final int add_expense_list=0x7f090056;
+        public static final int add_expense_list=0x7f09005e;
         public static final int add_expense_list_name=0x7f090000;
         public static final int add_expense_list_spinner=0x7f090001;
         public static final int add_expense_modify_button=0x7f09000c;
         public static final int add_expense_spender_text=0x7f090002;
         public static final int add_expense_submit_button=0x7f09000b;
+        public static final int add_group_name=0x7f090010;
+        public static final int add_group_name_edit=0x7f090011;
         public static final int add_members_view=0x7f09000f;
-        public static final int button_linear_layout=0x7f090043;
-        public static final int button_member_balance=0x7f090045;
-        public static final int button_member_name=0x7f090044;
-        public static final int calc_back=0x7f090023;
-        public static final int calc_cancel=0x7f090025;
-        public static final int calc_clear=0x7f090024;
-        public static final int calc_edit_view=0x7f090010;
-        public static final int calc_gridview=0x7f090011;
-        public static final int calc_num_0=0x7f09001e;
-        public static final int calc_num_1=0x7f090012;
-        public static final int calc_num_2=0x7f090013;
-        public static final int calc_num_3=0x7f090014;
-        public static final int calc_num_4=0x7f090016;
-        public static final int calc_num_5=0x7f090017;
-        public static final int calc_num_6=0x7f090018;
-        public static final int calc_num_7=0x7f09001a;
-        public static final int calc_num_8=0x7f09001b;
-        public static final int calc_num_9=0x7f09001c;
-        public static final int calc_num_dot=0x7f09001f;
-        public static final int calc_op_divide=0x7f090021;
-        public static final int calc_op_is=0x7f090020;
-        public static final int calc_op_minus=0x7f090019;
-        public static final int calc_op_plus=0x7f090015;
-        public static final int calc_op_times=0x7f09001d;
-        public static final int calc_use=0x7f090022;
-        public static final int calculator_option=0x7f090051;
-        public static final int changeAccountButton=0x7f090040;
-        public static final int change_account_string=0x7f09003f;
-        public static final int emailInput=0x7f09003b;
-        public static final int emailString=0x7f09003a;
-        public static final int expense_list_amount=0x7f090027;
-        public static final int expense_list_date=0x7f090028;
-        public static final int expense_list_delete=0x7f090054;
-        public static final int expense_list_description=0x7f090029;
-        public static final int expense_list_modify=0x7f090053;
-        public static final int expense_list_participants=0x7f09002a;
-        public static final int expense_list_spender=0x7f090026;
-        public static final int expense_list_view=0x7f09002c;
-        public static final int expense_list_view_landscape=0x7f09002e;
-        public static final int fast_log_in_title=0x7f090037;
-        public static final int filter_expense_list=0x7f090055;
-        public static final int group_option=0x7f090052;
-        public static final int invite_check_email=0x7f090035;
-        public static final int invite_check_name=0x7f090032;
-        public static final int invite_editemail=0x7f090034;
-        public static final int invite_editname=0x7f090031;
-        public static final int invite_email=0x7f090033;
-        public static final int invite_invitation=0x7f09002f;
-        public static final int invite_name=0x7f090030;
-        public static final int list_of_wbw_lists_listview=0x7f090050;
-        public static final int log_in_as=0x7f090038;
-        public static final int log_in_emailaddress=0x7f090039;
-        public static final int log_in_title=0x7f090036;
-        public static final int login=0x7f090041;
-        public static final int member_list_view=0x7f09002b;
-        public static final int member_list_view_landscape=0x7f09002d;
-        public static final int page_expense_list=0x7f090057;
-        public static final int passwordInput=0x7f09003d;
-        public static final int passwordString=0x7f09003c;
-        public static final int refresh_button=0x7f090047;
-        public static final int refresh_expense_list=0x7f090059;
-        public static final int refresh_wbw_list=0x7f09005a;
-        public static final int rememberMe=0x7f090042;
-        public static final int results_expense_list=0x7f090058;
-        public static final int shortcut=0x7f09003e;
+        public static final int button_linear_layout=0x7f090045;
+        public static final int button_member_balance=0x7f090047;
+        public static final int button_member_name=0x7f090046;
+        public static final int calc_back=0x7f090025;
+        public static final int calc_cancel=0x7f090027;
+        public static final int calc_clear=0x7f090026;
+        public static final int calc_edit_view=0x7f090012;
+        public static final int calc_gridview=0x7f090013;
+        public static final int calc_num_0=0x7f090020;
+        public static final int calc_num_1=0x7f090014;
+        public static final int calc_num_2=0x7f090015;
+        public static final int calc_num_3=0x7f090016;
+        public static final int calc_num_4=0x7f090018;
+        public static final int calc_num_5=0x7f090019;
+        public static final int calc_num_6=0x7f09001a;
+        public static final int calc_num_7=0x7f09001c;
+        public static final int calc_num_8=0x7f09001d;
+        public static final int calc_num_9=0x7f09001e;
+        public static final int calc_num_dot=0x7f090021;
+        public static final int calc_op_divide=0x7f090023;
+        public static final int calc_op_is=0x7f090022;
+        public static final int calc_op_minus=0x7f09001b;
+        public static final int calc_op_plus=0x7f090017;
+        public static final int calc_op_times=0x7f09001f;
+        public static final int calc_use=0x7f090024;
+        public static final int calculator_option=0x7f090059;
+        public static final int changeAccountButton=0x7f090042;
+        public static final int change_account_string=0x7f090041;
+        public static final int emailInput=0x7f09003d;
+        public static final int emailString=0x7f09003c;
+        public static final int expense_list_amount=0x7f090029;
+        public static final int expense_list_date=0x7f09002a;
+        public static final int expense_list_delete=0x7f09005c;
+        public static final int expense_list_description=0x7f09002b;
+        public static final int expense_list_modify=0x7f09005b;
+        public static final int expense_list_participants=0x7f09002c;
+        public static final int expense_list_spender=0x7f090028;
+        public static final int expense_list_view=0x7f09002e;
+        public static final int expense_list_view_landscape=0x7f090030;
+        public static final int fast_log_in_title=0x7f090039;
+        public static final int filter_expense_list=0x7f09005d;
+        public static final int group_option=0x7f09005a;
+        public static final int invite_check_email=0x7f090037;
+        public static final int invite_check_name=0x7f090034;
+        public static final int invite_editemail=0x7f090036;
+        public static final int invite_editname=0x7f090033;
+        public static final int invite_email=0x7f090035;
+        public static final int invite_invitation=0x7f090031;
+        public static final int invite_name=0x7f090032;
+        public static final int list_of_wbw_lists_listview=0x7f090058;
+        public static final int log_in_as=0x7f09003a;
+        public static final int log_in_emailaddress=0x7f09003b;
+        public static final int log_in_title=0x7f090038;
+        public static final int login=0x7f090043;
+        public static final int member_list_view=0x7f09002d;
+        public static final int member_list_view_landscape=0x7f09002f;
+        public static final int modify_member_delete=0x7f090048;
+        public static final int modify_member_email=0x7f09004b;
+        public static final int modify_member_email_edit=0x7f09004c;
+        public static final int modify_member_modify=0x7f09004d;
+        public static final int modify_member_name=0x7f090049;
+        public static final int modify_member_name_edit=0x7f09004a;
+        public static final int page_expense_list=0x7f09005f;
+        public static final int passwordInput=0x7f09003f;
+        public static final int passwordString=0x7f09003e;
+        public static final int refresh_button=0x7f09004f;
+        public static final int refresh_expense_list=0x7f090061;
+        public static final int refresh_wbw_list=0x7f090062;
+        public static final int rememberMe=0x7f090044;
+        public static final int results_expense_list=0x7f090060;
+        public static final int shortcut=0x7f090040;
         public static final int spinner_members=0x7f090003;
-        public static final int title_text=0x7f090046;
-        public static final int wbw_list_highest_balance=0x7f09004a;
-        public static final int wbw_list_highest_balance_header=0x7f09004e;
-        public static final int wbw_list_invite=0x7f09005b;
-        public static final int wbw_list_lowest_balance=0x7f09004b;
-        public static final int wbw_list_lowest_balance_header=0x7f09004f;
-        public static final int wbw_list_my_balance=0x7f090049;
-        public static final int wbw_list_my_balance_header=0x7f09004d;
-        public static final int wbw_list_name=0x7f090048;
-        public static final int wbw_list_name_header=0x7f09004c;
+        public static final int title_text=0x7f09004e;
+        public static final int wbw_list_highest_balance=0x7f090052;
+        public static final int wbw_list_highest_balance_header=0x7f090056;
+        public static final int wbw_list_invite=0x7f090063;
+        public static final int wbw_list_lowest_balance=0x7f090053;
+        public static final int wbw_list_lowest_balance_header=0x7f090057;
+        public static final int wbw_list_my_balance=0x7f090051;
+        public static final int wbw_list_my_balance_header=0x7f090055;
+        public static final int wbw_list_name=0x7f090050;
+        public static final int wbw_list_name_header=0x7f090054;
     }
     public static final class layout {
         public static final int add_expense_member_list=0x7f030000;
         public static final int add_expense_view=0x7f030001;
-        public static final int calculator=0x7f030002;
-        public static final int expense_list=0x7f030003;
-        public static final int expense_list_view=0x7f030004;
-        public static final int expense_list_view_landscape=0x7f030005;
-        public static final int invite=0x7f030006;
-        public static final int login=0x7f030007;
-        public static final int login_landscape=0x7f030008;
-        public static final int member_button_view=0x7f030009;
-        public static final int my_title_bar=0x7f03000a;
-        public static final int wbw_list=0x7f03000b;
-        public static final int wbw_lists_view=0x7f03000c;
+        public static final int add_group=0x7f030002;
+        public static final int calculator=0x7f030003;
+        public static final int expense_list=0x7f030004;
+        public static final int expense_list_view=0x7f030005;
+        public static final int expense_list_view_landscape=0x7f030006;
+        public static final int invite=0x7f030007;
+        public static final int login=0x7f030008;
+        public static final int login_landscape=0x7f030009;
+        public static final int member_button_view=0x7f03000a;
+        public static final int modify_member=0x7f03000b;
+        public static final int my_title_bar=0x7f03000c;
+        public static final int wbw_list=0x7f03000d;
+        public static final int wbw_lists_view=0x7f03000e;
     }
     public static final class menu {
         public static final int add_expense_options_menu=0x7f080000;
@@ -150,6 +161,11 @@ public final class R {
     public static final class string {
         public static final int add=0x7f060018;
         public static final int add_all=0x7f060041;
+        /**  Add Group 
+ Add Group 
+         */
+        public static final int add_group=0x7f060059;
+        public static final int add_group_title=0x7f06005a;
         public static final int amount=0x7f060040;
         public static final int app_name=0x7f060002;
         public static final int back=0x7f060052;
@@ -183,6 +199,10 @@ public final class R {
         public static final int date=0x7f06003e;
         public static final int delete=0x7f06001a;
         public static final int delete_expense_unknown=0x7f06003a;
+        /**  Modify member 
+ Modify member 
+         */
+        public static final int delete_member=0x7f060057;
         public static final int deletion_success=0x7f060037;
         public static final int description=0x7f06003d;
         /**  Add Expense interactive 
@@ -202,6 +222,7 @@ public final class R {
         public static final int filtered_none=0x7f060038;
         public static final int filtered_on=0x7f060039;
         public static final int green_check=0x7f06002b;
+        public static final int group_name=0x7f06005b;
         public static final int groups=0x7f060043;
         public static final int invitation=0x7f060026;
         public static final int invitation_already_participant=0x7f060029;
@@ -226,6 +247,7 @@ public final class R {
         public static final int login_request_failed=0x7f060015;
         public static final int member_list_retrieve_failed=0x7f060035;
         public static final int modify=0x7f060019;
+        public static final int modify_member=0x7f060058;
         public static final int name=0x7f060024;
         public static final int negative_numbers_not_allowed=0x7f060053;
         /**  General 
@@ -286,6 +308,8 @@ public final class R {
         public static final int log_in_text_style=0x7f070007;
         public static final int log_in_title_style=0x7f07000a;
         public static final int log_in_title_style_landscape=0x7f07000b;
+        public static final int modify_member_button=0x7f07000f;
+        public static final int modify_member_text=0x7f070010;
         /**  Application style 
  Application style 
          */
