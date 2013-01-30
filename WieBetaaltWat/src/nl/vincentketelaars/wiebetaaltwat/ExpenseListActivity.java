@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.LightingColorFilter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +33,9 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnLongClickListener;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +44,9 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,6 +69,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private ProgressDialog progressDialog;
 	private ExpenseListAdapter expenseListViewAdapter;
 	private Toast toast;
+	public String sortPage = "timestamp"; 
 
 	// Service
 	private boolean mBound;
@@ -175,6 +181,13 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 				expenseListViewAdapter.setFilterName(wbwList.getGroupMembers().getMember(arg2).getMember());
 				showFilteredMessage();
 			}
+		};	
+		OnItemLongClickListener mOnItemLongClickListener = new OnItemLongClickListener() {	
+
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {				
+				createModifyMemberDialog(wbwList.getGroupMembers().getMember(arg2));
+				return true;
+			}
 		};
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 			memberListView = (ListView) findViewById(R.id.member_list_view_landscape);
@@ -182,11 +195,13 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 			// These need to be set, in order for the onItemClickListener to work! This is only necessary for the vertical ListView. The horizontal ListView has this implemented.
 			myMemberAdapter.setParentListView(memberListView);
 			myMemberAdapter.setOnItemClickListener(mOnItemClickListener);
+			myMemberAdapter.setOnItemLongClickListener(mOnItemLongClickListener);
 		} else {
 			memberListView = (HorizontalListView) findViewById(R.id.member_list_view);  
 			memberListView.setAdapter(myMemberAdapter); 
 		}		
-		memberListView.setOnItemClickListener(mOnItemClickListener);		
+		memberListView.setOnItemClickListener(mOnItemClickListener);	
+		memberListView.setOnItemLongClickListener(mOnItemLongClickListener);
 	}
 
 	/**
@@ -570,6 +585,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 				wbwList.setExpenses(eTemp);
 				wbwList.setGroupMembers(mTemp);
 				showToast(getResources().getString(R.string.deletion_success), Gravity.CENTER, Toast.LENGTH_SHORT);
+				setMemberListView();
 				setExpenseListView();
 				setResultIntent();
 			} else {				
@@ -663,7 +679,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private class AsyncChangeExpenses extends AsyncTask<String, Void, String> {
 
 		protected String doInBackground(String... s) {
-			return mService.changeExpenseList(wbwList.getLid(), Integer.toString(numPage), Integer.toString(wbwList.getNumResults()));	
+			return mService.changeExpenseList(wbwList.getLid(), sortPage, Integer.toString(numPage), Integer.toString(wbwList.getNumResults()));	
 		}
 
 		protected void onPostExecute(String back) {
@@ -758,5 +774,45 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		toast.setText(text);
 		toast.setGravity(position, 0, 0);
 		toast.show();
+	}
+	
+	
+	/**
+	 * Create AlertDialog that allows the user to modify or delete a member.
+	 */
+	public void createModifyMemberDialog(Member m) {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.modify_member));
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		View dialogView = inflater.inflate(R.layout.modify_member, null);
+		builder.setView(dialogView);
+		final EditText editName = (EditText) dialogView.findViewById(R.id.modify_member_name_edit);
+		editName.setText(m.getMember());
+		final EditText editEmail = (EditText) dialogView.findViewById(R.id.modify_member_email_edit);	
+		editEmail.setText(m.getEmail());
+		final Button deleteMember = (Button) dialogView.findViewById(R.id.modify_member_delete);
+		final Button modifyMember = (Button) dialogView.findViewById(R.id.modify_member_modify);
+		deleteMember.getBackground().setColorFilter(new LightingColorFilter(0xFFFF0000, 0x00FF0000));
+		deleteMember.setEnabled(((int) (m.getBalance() * 100)) == 0);
+		modifyMember.setEnabled(m.isActivated() == 0);
+		builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {			
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();		
+			}
+		});
+		final AlertDialog alert = builder.create();
+		deleteMember.setOnClickListener(new View.OnClickListener() {			
+			public void onClick(View v) {
+				System.out.println("delete!");	
+				alert.cancel();
+			}
+		});
+		modifyMember.setOnClickListener(new View.OnClickListener() {			
+			public void onClick(View v) {
+				System.out.println("modify!");		
+				alert.cancel();
+			}
+		});
+		alert.show();
 	}
 }

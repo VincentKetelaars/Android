@@ -114,4 +114,13 @@
     <string name="calc_input_empty">You have to fill something in before you can calculate the result.</string>
     <string name="calc_failed">Calculating this input has failed. Please contact us.</string>
 
+    <!-- Modify member -->
+    <string name="delete_member">Delete member</string>
+    <string name="modify_member">Modify member</string>
+
+    <!-- Add Group -->
+    <string name="add_group">Add group..</string>
+    <string name="add_group_title">Add new group</string>
+    <string name="group_name">Group name</string>
+
 </resources>

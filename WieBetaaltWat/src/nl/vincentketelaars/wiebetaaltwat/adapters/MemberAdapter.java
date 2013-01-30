@@ -9,19 +9,22 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListener {
+public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListener, OnLongClickListener {
 
 	private List<Member> members;
 	private AdapterView<ListAdapter> mListView;
 	private OnItemClickListener mOnItemClickListener;
+	private OnItemLongClickListener mOnItemLongClickListener;
 
 	public MemberAdapter(Context context, int textViewResourceId, List<Member> m) {
 		super(context, textViewResourceId, m);
@@ -84,5 +87,25 @@ public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListen
 
 	public void setOnItemClickListener(OnItemClickListener listener) {
 		mOnItemClickListener = listener;
+	}
+
+	public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+		mOnItemLongClickListener = listener;
+	}
+
+	public boolean onLongClick(View v) {
+		System.out.println("Yeah!");
+		if (mListView == null || mOnItemLongClickListener == null || members == null)
+			return false;
+		System.out.println("Ik komt hier!");
+		LinearLayout l = (LinearLayout) v;
+		TextView t = (TextView) l.getChildAt(0);	
+		for (int i = 0; i < getCount(); i++) {
+			if (members.get(i).getMember().equals(t.getText().toString())) {
+				mOnItemLongClickListener.onItemLongClick(mListView, v, i, i);
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Application style -->
     <style name="my_app_style" parent="@android:style/Theme.Black">
@@ -104,6 +104,17 @@
     <style name="invite_textview" parent="android:style/TextAppearance.Medium">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="modify_member_button" parent="android:style/TextAppearance.Medium">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+    <style name="modify_member_text" parent="android:style/TextAppearance.Medium">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
     </style>
 
 </resources>

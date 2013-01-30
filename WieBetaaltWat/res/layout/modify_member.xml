@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/modify_member_delete"
+        style="@style/modify_member_button"
+        android:text="@string/delete_member" />
+
+    <TextView
+        android:id="@+id/modify_member_name"
+        style="@style/modify_member_text"
+        android:text="@string/name" />
+
+    <EditText
+        android:id="@+id/modify_member_name_edit"
+        style="@style/modify_member_text"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/modify_member_email"
+        style="@style/modify_member_text"
+        android:text="@string/email" />
+
+    <EditText
+        android:id="@+id/modify_member_email_edit"
+        style="@style/modify_member_text"
+        android:inputType="textEmailAddress" />
+
+    <Button
+        android:id="@+id/modify_member_modify"
+        style="@style/modify_member_button"
+        android:text="@string/modify_member" />
+
+</LinearLayout>

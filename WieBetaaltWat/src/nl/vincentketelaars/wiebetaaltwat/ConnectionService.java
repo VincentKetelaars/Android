@@ -90,8 +90,8 @@ public class ConnectionService extends Service {
 	}
 	
 	
-	public String changeExpenseList(String lid, String page, String numResults){
-		String url = "/index.php?page=balance&lid="+lid+"&p=&sort_column=timestamp&rows="+numResults+"&p="+page+"#list";
+	public String changeExpenseList(String lid, String sort, String page, String numResults){
+		String url = "/index.php?page=balance&lid="+lid+"&p=&sort_column="+sort+"&rows="+numResults+"&p="+page+"#list";
 		return retrieveHtmlPage(url);
 	}
 	

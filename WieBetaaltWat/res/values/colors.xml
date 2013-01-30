@@ -4,5 +4,6 @@
     <color name="bright_orange">#FFA500</color>
     <color name="mild_gray">#8B8386</color>
     <color name="dark_gray">#6C7B8B</color>
+    <color name="red">#FF0000</color>
 
 </resources>

@@ -13,3 +13,9 @@ delete and edit participant
 make offline access better (access everything)
 
 create new list
+
+email if something goes wrong?
+
+share with friends
+
+Sort expenses on time, amount 
