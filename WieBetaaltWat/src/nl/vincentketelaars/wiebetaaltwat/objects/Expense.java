@@ -1,7 +1,6 @@
 package nl.vincentketelaars.wiebetaaltwat.objects;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,11 +16,12 @@ public class Expense implements Parcelable, Serializable {
 	private String description;
 	private double amount;
 	private String date;
-	private ArrayList<Member> participants;	
+	private MemberGroup participants;	
 	private String tid;
 	private String delete;
+	private long lastUpdate;
 
-	public Expense (String sp, String de, double am, String d, ArrayList<Member> p, String tid, String delete) {
+	public Expense (String sp, String de, double am, String d, MemberGroup p, String tid, String delete) {
 		setSpender(sp);
 		setDescription(de);
 		setAmount(am);
@@ -29,6 +29,7 @@ public class Expense implements Parcelable, Serializable {
 		setParticipants(p);
 		setTid(tid);
 		setDelete(delete);
+		setLastUpdate(System.currentTimeMillis());
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class Expense implements Parcelable, Serializable {
 		this.date = date;
 	}
 
-	public ArrayList<Member> getParticipants() {
+	public MemberGroup getParticipants() {
 		return participants;
 	}
 
@@ -91,44 +92,28 @@ public class Expense implements Parcelable, Serializable {
 		this.delete = delete;
 	}
 
-	public String participantsToString() {
-		StringBuilder s = new StringBuilder();
-		for (Member m : getParticipants()) {
-			s.append(m);
-			s.append(", ");
-		}
-		return s.toString().substring(0,s.length()-2);
-	}
-
-	public boolean participantsContain(String member) {
-		for (Member m : getParticipants()) {
-			if (m.getMember().equals(member))
-				return true;
-		}
-		return false;
-	}
-
-	public String memberNames() {
-		StringBuilder s = new StringBuilder();
-		for (Member m : getParticipants()) {
-			s.append(m.getMember());
-			if (m.getCount() > 1) {
-				s.append(" "+m.getCount()+"x");
-			}
-			s.append(", ");
-		}
-		return s.toString().substring(0,s.length()-2);
-	}
-
-	public void setParticipants(ArrayList<Member> participants) {
+	public void setParticipants(MemberGroup participants) {
 		this.participants = participants;
+	}
+
+	public long getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(long lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+	
+	public boolean equals(Expense e) {
+		return tid.equals(e.getTid()) && spender.equals(e.getSpender()) && description.equals(e.getDescription()) && date.equals(e.getDate()) &&
+				Math.abs(e.getAmount()-amount) < 0.01 && getParticipants().participantsHaveEqualCount(e.getParticipants());
 	}
 
 	/**
 	 * This is a String representation of this Expense object.
 	 */
 	public String toString() {
-		return "<(Spender: "+getSpender()+", Description: "+getDescription()+", Amount: "+getAmount()+", Date: "+getDate()+", Participants: "+participantsToString()+")>";
+		return "<(Spender: "+getSpender()+", Description: "+getDescription()+", Amount: "+getAmount()+", Date: "+getDate()+", Participants: "+participants.toString()+")>";
 	}
 
 	/**
@@ -147,9 +132,10 @@ public class Expense implements Parcelable, Serializable {
 		dest.writeString(description);
 		dest.writeDouble(amount);
 		dest.writeString(date);
-		dest.writeList(participants);
+		dest.writeParcelable(participants, 0);
 		dest.writeString(tid);
 		dest.writeString(delete);
+		dest.writeLong(lastUpdate);
 	}
 
 	/**
@@ -161,9 +147,10 @@ public class Expense implements Parcelable, Serializable {
 		description = in.readString();
 		amount = in.readDouble();
 		date = in.readString();
-		participants = in.readArrayList(Member.class.getClassLoader());
+		participants = in.readParcelable(MemberGroup.class.getClassLoader());
 		tid = in.readString();
 		delete = in.readString();
+		lastUpdate = in.readLong();
 	}
 
 	/**

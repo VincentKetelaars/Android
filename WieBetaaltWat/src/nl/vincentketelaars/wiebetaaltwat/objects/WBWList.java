@@ -2,6 +2,7 @@ package nl.vincentketelaars.wiebetaaltwat.objects;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -24,6 +25,7 @@ public class WBWList implements Parcelable, Serializable {
 	private int pages;
 	private int numResults;
 	private ArrayList<MemberGroup> groupLists;
+	private long lastUpdate;
 	
 	public WBWList (String html, String list, Member me, Member high, Member low, String lid) {
 		setHTML(html);
@@ -37,6 +39,7 @@ public class WBWList implements Parcelable, Serializable {
 		setResultsPerPage(null);
 		setPages(0);
 		setNumResults(0);
+		setLastUpdate(System.currentTimeMillis());
 	}
 		
 	public WBWList (String html, String list, Member me, Member high, Member low, MemberGroup groupMembers, String lid) {
@@ -51,6 +54,7 @@ public class WBWList implements Parcelable, Serializable {
 		setResultsPerPage(null);
 		setPages(0);
 		setNumResults(0);
+		setLastUpdate(System.currentTimeMillis());
 	}
 	
 	/**
@@ -161,6 +165,14 @@ public class WBWList implements Parcelable, Serializable {
 		this.groupLists = groupLists;
 	}
 
+	public long getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(long lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
 	/**
 	 * This is a mandatory method with the parcelable interface
 	 */
@@ -185,6 +197,7 @@ public class WBWList implements Parcelable, Serializable {
 		dest.writeInt(pages);
 		dest.writeInt(numResults);
 		dest.writeList(groupLists);
+		dest.writeLong(lastUpdate);
 	}
 	
 	/**
@@ -204,6 +217,7 @@ public class WBWList implements Parcelable, Serializable {
 		pages = in.readInt();
 		numResults = in.readInt();
 		groupLists = in.readArrayList(MemberGroup.class.getClassLoader());
+		lastUpdate = in.readLong();
 	}
 
 	/**
@@ -219,4 +233,88 @@ public class WBWList implements Parcelable, Serializable {
 			return new WBWList[size];
 		}
 	};
+
+	/**
+	 * merge a WBWList
+	 * @param temp
+	 * @return
+	 */
+	public boolean mergeWBWList(WBWList temp) {
+		setListName(temp.getListName());
+		setMe(temp.getMe());
+		setHighestMember(temp.getHighestMember());
+		setLowestMember(temp.getLowestMember());
+		setLid(temp.getLid());
+		setPages(temp.getPages());
+		setNumResults(temp.getNumResults());
+		boolean success = groupMembers.mergeMemberGroup(temp.getGroupMembers());
+		success = mergeExpenses(temp.getExpenses()) && success;
+		success = mergeGroupLists(temp.getGroupLists()) && success;		
+		lastUpdate = System.currentTimeMillis();	
+		return success;
+	}
+	
+	/**
+	 * merge the Expenses list
+	 * Make sure that the expenses are sorted by last altered.
+	 * @param temp
+	 * @return
+	 */
+	public boolean mergeExpenses(ArrayList<Expense> temp) {
+		if (expenses == null || temp.size() >= expenses.size()) {
+			Collections.copy(expenses, temp);
+			return true;
+		}
+		ArrayList<Expense> first = new ArrayList<Expense>();
+		int index = 0;
+		int myTry = 0;
+		for (Expense e : temp) {
+			Expense e1 = expenses.get(index);
+			if (e.getTid() != e1.getTid()) {
+				first.add(e);
+				myTry = 0;
+			} else if (!e.equals(e1)) {
+				expenses.set(index, e);
+				index++;
+				myTry = 0;
+			} else { // No change has been made, so we try three times if the next has made no change either.
+				myTry++;
+				index++;
+				if (myTry == 3)
+					break;
+			}
+		}
+		first.addAll(expenses);
+		Collections.copy(expenses, first);
+		return true;
+	}
+	
+	/**
+	 * merge the groupLists.
+	 * @param temp
+	 * @return
+	 */
+	public boolean mergeGroupLists(ArrayList<MemberGroup> temp) {
+		if (groupLists == null || temp.size() >= groupLists.size()) {
+			Collections.copy(groupLists, temp);
+			return true;
+		}
+		boolean success = true;
+		for (MemberGroup m : temp) {
+			for (MemberGroup n : groupLists) {
+				if (m.getGroupName().equals(n.getGroupName())) {
+					success = n.mergeMemberGroup(m) && success;
+					break;
+				}
+			}
+			groupLists.add(m); // New WBWList
+			m.setLastUpdate(System.currentTimeMillis());
+		}			
+		long time = System.currentTimeMillis();
+		for (MemberGroup x : groupLists) {
+			if (Math.abs(time - x.getLastUpdate()) > 1000) // The updates should easily have been done in one second.
+				groupLists.remove(x); // Any groupList not in temp.getGroupLists() has to be removed from the current WBW.
+		}
+		return success;
+	}
 }

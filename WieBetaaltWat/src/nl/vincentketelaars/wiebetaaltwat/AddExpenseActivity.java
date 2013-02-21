@@ -121,20 +121,10 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * If there is an Expense that needs to be modified. This method sets the values.
 	 */
 	private void setModifyExpenseValues() {
-		for (Member p : modifyExpense.getParticipants()) {
-			for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
-				if (m.getMember().equals(p.getMember())) {
-					m.setCount(p.getCount());
-				}
-			}
-		}
+		wbwList.getGroupMembers().setParticipantsCount(modifyExpense.getParticipants());
 		amountInputView.setText(Double.toString(modifyExpense.getAmount()));
 		adapter.setAmount(modifyExpense.getAmount());
-		int index = 0;
-		for (int i = 0; i < wbwList.getGroupMembers().getGroupMembers().size(); i++) {
-			if (modifyExpense.getSpender().equals(wbwList.getGroupMembers().getMember(i).getMember()))
-				index = i;
-		}
+		int index = wbwList.getGroupMembers().getMemberPosition(modifyExpense.getSpender());
 		memberSpinner.setSelection(index, true);
 		dateInputView.setText(modifyExpense.getDate());
 		descriptionView.setText(modifyExpense.getDescription());
@@ -150,7 +140,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		memberSpinner = (Spinner) findViewById(R.id.spinner_members);
 		memberSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				adapter.setSpender(wbwList.getGroupMembers().getMember(arg2).getMember());	
+				adapter.setSpender(wbwList.getGroupMembers().getMember(arg2).getName());	
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -231,7 +221,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private void setMembersSpinner() {
 		ArrayList<String> names = new ArrayList<String>();
 		for (Member m : wbwList.getGroupMembers().getGroupMembers()) {
-			names.add(m.getMember());
+			names.add(m.getName());
 		}
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, names);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -399,14 +389,11 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	private boolean expenseEqualsDataJustSend(Expense base) {
 		if (base == null)
 			return false;
-		if (base.getDate().equals(date) && 
+		return  base.getDate().equals(date) && 
 				base.getDescription().equals(descriptionRevision(description)) && 
-				base.getSpender().equals(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getMember()) && 
+				base.getSpender().equals(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getName()) && 
 				Math.abs(base.getAmount()-Double.parseDouble(inputAmount))<0.01 &&
-				participantsHaveEqualCount(wbwList.getGroupMembers(), base.getParticipants())) {			
-			return true;
-		}
-		return false;
+				wbwList.getGroupMembers().participantsHaveEqualCount(base.getParticipants());
 	}
 
 	/**
@@ -416,26 +403,6 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 */
 	private String descriptionRevision(String description2) {
 		return description.trim();
-	}
-
-	/**
-	 * This method compares the two ArrayLists of Members for equal count.
-	 * @param first
-	 * @param second
-	 * @return if both MemberLists have for each member the same count, it returns true. False otherwise.
-	 */
-	public boolean participantsHaveEqualCount(MemberGroup first, ArrayList<Member> second) {
-		for (Member f : first.getGroupMembers()) {
-			for (Member s : second) {
-				if (s.getMember().equals(f.getMember())) {
-					if (s.getCount() != f.getCount()) {
-						return false;
-					}
-					continue;
-				}
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -505,7 +472,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 	 * @return Id.
 	 */
 	private String getSpenderId() {
-		return Integer.toString(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getId());
+		return Integer.toString(wbwList.getGroupMembers().getMember(memberSpinner.getSelectedItemPosition()).getUid());
 	}
 
 	/**
@@ -775,7 +742,7 @@ public class AddExpenseActivity extends Activity implements OnClickListener, OnD
 		builder.setView(dialogView);
 		builder.setPositiveButton(getResources().getString(R.string.add), new DialogInterface.OnClickListener() {			
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 			}
 		});
 		builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {			

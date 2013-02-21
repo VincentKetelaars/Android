@@ -1,7 +1,6 @@
 package nl.vincentketelaars.wiebetaaltwat.objects;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,7 +118,7 @@ public class MyHtmlParser {
 					if (mx.find()) {
 						String find = mx.group();
 						int count = Integer.parseInt(find.substring(1,find.length()-1));
-						participant.setMember(members[j].substring(0,members[j].length()-find.length()));
+						participant.setName(members[j].substring(0,members[j].length()-find.length()));
 						participant.setCount(count);						
 					}
 					participants.add(participant);
@@ -131,7 +130,7 @@ public class MyHtmlParser {
 				String tid = null;
 				if (m.find())
 					tid = m.group().substring(4);
-				Expense expense = new Expense(spender, description, amount, date, participants, tid, delete);
+				Expense expense = new Expense(spender, description, amount, date, new MemberGroup(participants), tid, delete);
 				result.add(expense);
 			}
 		}
@@ -154,8 +153,38 @@ public class MyHtmlParser {
 			int id = Integer.parseInt(options.get(i).attr("value"));
 			String name = options.get(i).text();
 			for (Member m : memberGroup.getGroupMembers()) {
-				if (m.getMember().equals(name)) {
-					m.setId(id);				}
+				if (m.getName().equals(name)) {
+					m.setUid(id);				}
+			}
+		}
+		return memberGroup;
+	}
+	
+	/**
+	 * This method parses a html page for the emails of the members.
+	 * @param memberGroup
+	 * @return
+	 */
+	public MemberGroup parseEditGroup(MemberGroup memberGroup) {			
+		if (memberGroup == null)
+			return null;
+		if (!correctInputEditGroup())
+			return null;
+		Elements membersAdmin = doc.getElementsByClass("members-admin");
+		Elements tr = membersAdmin.get(0).getElementsByTag("tr");
+		for (int i = 1; i < tr.size(); i++) {
+			Elements input = tr.get(i).getElementsByTag("input");
+			String active = tr.get(i).attr("class");				
+			String name = input.get(3).text();
+			String email = input.get(4).text();
+			for (Member m : memberGroup.getGroupMembers()) {
+				if (m.getName().equals(name)) {
+					m.setEmail(email);
+					if (active == null)
+						m.setActivated(0);
+					else 
+						m.setActivated(1);
+				}
 			}
 		}
 		return memberGroup;
@@ -233,6 +262,23 @@ public class MyHtmlParser {
 			return false;
 		String title = retrieveTitle();
 		if (title != null && title.equals("Wiebetaaltwat.nl : Invoer"))
+			return true;
+		Log.i("AddExpense", "Retrieved the wrong page");
+		return false;
+	}
+	
+	/**
+	 * This method checks the input string for html code. It checks if it has the correct title off the EditGroup.
+	 * @param input
+	 * @return true if code checks out, otherwise return false
+	 */
+	public boolean correctInputEditGroup() {
+		if (!correctInput())
+			return false;
+		if (hasErrors())
+			return false;
+		String title = retrieveTitle();
+		if (title != null && title.equals("Wiebetaaltwat.nl : Deelnemers"))
 			return true;
 		Log.i("AddExpense", "Retrieved the wrong page");
 		return false;

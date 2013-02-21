@@ -1,17 +1,27 @@
 package nl.vincentketelaars.wiebetaaltwat;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
+import java.io.StreamCorruptedException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
+import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
+import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
+import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -34,8 +44,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Parcelable;
+import android.view.Gravity;
+import android.widget.Toast;
 
 /**
  * This Service is to remain active throughout the use of the application. Each activity should be able to bind to it. After binding, each activity can use any method needed,
@@ -44,11 +58,15 @@ import android.os.IBinder;
  *
  */
 public class ConnectionService extends Service {
-	
+
 	// Global instances
 	private HttpClient client;	
 	private IBinder mBinder;
-	
+	private WBW wbw;
+	private WBW wbwInitialize;
+	private int numberOfExpenses = 1000;
+
+
 	/**
 	 * This method is called upon creation of this Service.
 	 * It merely instantiates the DefaultHttpClient and LocalBinder. Both are to remain throughout the application use.
@@ -67,34 +85,50 @@ public class ConnectionService extends Service {
 		client = new DefaultHttpClient(httpParameters);
 		mBinder = new LocalBinder();
 	}
-	
+
 	/**
 	 * This public Binder class.
 	 * @author Vincent
 	 *
 	 */
-    public class LocalBinder extends Binder {
-        protected ConnectionService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return ConnectionService.this;
-        }
-    }
+	public class LocalBinder extends Binder {
+		protected ConnectionService getService() {
+			// Return this instance of LocalService so clients can call public methods
+			return ConnectionService.this;
+		}
+	}
 
-    /**
-     * This mandatory method returns the LocalBinder, so that activities can actively bind to this Service.
-     */
+	/**
+	 * This mandatory method returns the LocalBinder, so that activities can actively bind to this Service.
+	 */
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return mBinder;
 	}
-	
-	
+
+
+	public void initialize(String email, String password) {
+		wbw = new WBW(new ArrayList<WBWList>());
+		WBW temp = inputWBWList(Resources.privateFile);
+		if (temp != null && email.equals(temp.getEmail()) && password.equals(temp.getPassword())) {
+			wbw = temp;		
+		} else {
+			wbw.setEmail(email);
+			wbw.setPassword(password);
+		}
+
+		// Get the current WBW
+		wbwInitialize = new WBW(new ArrayList<WBWList>());
+		new AsyncLogin().execute(new String[]{email, password});
+	}
+
+
 	public String changeExpenseList(String lid, String sort, String page, String numResults){
 		String url = "/index.php?page=balance&lid="+lid+"&p=&sort_column="+sort+"&rows="+numResults+"&p="+page+"#list";
 		return retrieveHtmlPage(url);
 	}
-	
+
 	/**
 	 * Send an modified expense to the server with an http post. 
 	 * @param lid
@@ -112,7 +146,7 @@ public class ConnectionService extends Service {
 		arguments.add(new BasicNameValuePair("tid", tid));
 		return sendHttpPost(arguments);
 	}
-	
+
 	/**
 	 * Send an expense to the server with an http post. 
 	 * @param lid
@@ -129,7 +163,7 @@ public class ConnectionService extends Service {
 		arguments.add(new BasicNameValuePair("action", "add_transaction"));
 		return sendHttpPost(arguments);
 	}
-	
+
 	/**
 	 * This method returns all the arguments needed for an expense post request.
 	 * @param lid
@@ -148,12 +182,12 @@ public class ConnectionService extends Service {
 		arguments.add(new BasicNameValuePair("amount", amount.replace(".",",")));
 		arguments.add(new BasicNameValuePair("date", date));
 		for (Member m : members.getGroupMembers()) {
-			arguments.add(new BasicNameValuePair("factor["+ m.getId() +"]", Integer.toString(m.getCount())));
+			arguments.add(new BasicNameValuePair("factor["+ m.getUid() +"]", Integer.toString(m.getCount())));
 		}
 		arguments.add(new BasicNameValuePair("submit_add", "Verwerken"));
 		return arguments;
 	}
-	
+
 	/**
 	 * This method takes two parameters.
 	 * @param email
@@ -171,7 +205,7 @@ public class ConnectionService extends Service {
 		arguments.add(new BasicNameValuePair("login_submit", "submit"));
 		return sendHttpPost(arguments);
 	}
-	
+
 	/**
 	 * Send Http post to index.php
 	 * @param arguments
@@ -199,7 +233,7 @@ public class ConnectionService extends Service {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * This method only expects one parameter, which is the url within the domain. Combined with the url of the domain itself, it represents the page that needs to be retrieved.
 	 * @param html
@@ -289,20 +323,27 @@ public class ConnectionService extends Service {
 		String result = retrieveHtmlPage("/index.php?action=logout");
 		return result;
 	}
-	
+
 	/**
 	 * This method checks whether the device has an internet connection. It returns false if there is no viable connection.
 	 * @return
 	 */
 	public boolean isOnline() {
-	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	        return true;
-	    }
-	    return false;
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
 	}
-	
+
+	/**
+	 * This method sends an invitation.
+	 * @param name
+	 * @param email
+	 * @param lid
+	 * @return
+	 */
 	public String sendInvitation(String name, String email, String lid) {
 		List<NameValuePair> arguments = new ArrayList<NameValuePair>();
 		arguments.add(new BasicNameValuePair("page", "members"));
@@ -311,5 +352,165 @@ public class ConnectionService extends Service {
 		arguments.add(new BasicNameValuePair("member_alias", name));
 		arguments.add(new BasicNameValuePair("email", email));
 		return sendHttpPost(arguments);
+	}
+
+	/**
+	 * This method save an arraylist to a permanent file.
+	 * @param file
+	 * @param wbwlist
+	 */
+	private void outputWBWList(String file, WBW w) {
+		try {
+			FileOutputStream fileOut = openFileOutput(file, Context.MODE_PRIVATE);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(w);
+			out.close();
+			fileOut.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method retrieves an arraylist from the permanent file.
+	 * @param file
+	 * @return
+	 */
+	private WBW inputWBWList(String file) {
+		WBW w = null;
+		try {
+			FileInputStream fileIn = openFileInput(file);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			w = (WBW) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return w;
+	}
+
+	/**
+	 * This private class, makes sure that the network connections are made on a separate thread.
+	 * @author Vincent
+	 *
+	 */
+	private class AsyncLogin extends AsyncTask<String, Void, String> {				
+		protected String doInBackground(String... s) {
+			return logOnToSite(s[0], s[1]);
+		}
+
+		protected void onPostExecute(String back) {
+			MyHtmlParser parser = new MyHtmlParser(back);
+			ArrayList<WBWList> temp = parser.parseTheWBWLists();
+			wbwInitialize.setWbwLists(temp);
+			if (wbwInitialize.getWbwLists() != null) {
+				for (WBWList wL : wbwInitialize.getWbwLists()) {
+					new AsyncExpenses().execute(new WBWList[]{wL});					
+				}					
+			}
+			System.out.println("WBWLists: "+wbwInitialize);
+		}		
+	}
+
+	/**
+	 * This private class, makes sure that the network connections are made on a separate thread.
+	 * @author Vincent
+	 *
+	 */
+	private class AsyncExpenses extends AsyncTask<WBWList, Void, String> {
+		WBWList wbw = null;
+		protected String doInBackground(WBWList... w) {
+			wbw = w[0];
+			return retrieveHtmlPage(wbw.getHTML()+"&p=1&sort_column=timestamp&rows="+numberOfExpenses+"#list");
+		}
+
+		protected void onPostExecute(String back) {
+			MyHtmlParser parser = new MyHtmlParser(back);
+			boolean correctInput = parser.correctInputExpenses();	
+			if (correctInput) {
+				for (WBWList wL : wbwInitialize.getWbwLists()) {
+					if (wL.getHTML().equals(wbw.getHTML())) {
+						ArrayList<Expense> temp = parser.parseTheListOfExpenses();
+						if (temp != null)
+							wL.setExpenses(temp);
+						MemberGroup members = parser.parseGroupMembers();
+						if (members != null)
+							wL.setGroupMembers(members);
+						ArrayList<Integer> resultsPerPage = parser.getResultsPerPage();
+						if (resultsPerPage != null) {
+							wL.setNumResults(resultsPerPage.remove(0));	// The duplicate element is removed
+							wL.setResultsPerPage(resultsPerPage);
+						}
+						wL.setPages(parser.getNumPages());
+						new AsyncRetrieveMemberUid().execute(new WBWList[]{wL});
+						new AsyncRetrieveMemberStatus().execute(new WBWList[]{wL});
+					}
+				}
+			}
+			System.out.println("Expenses: "+wbwInitialize);
+		}
+	}
+
+	/**
+	 * This private class, makes sure that the network connections are made on a separate thread.
+	 * @author Vincent
+	 *
+	 */
+	private class AsyncRetrieveMemberUid extends AsyncTask<WBWList, Void, String> {
+		WBWList wbw = null;
+
+		protected String doInBackground(WBWList... w) {
+			wbw = w[0];
+			return retrieveHtmlPage(wbw.getHTML().replace("balance","transaction&type=add"));
+		}
+
+		protected void onPostExecute(String back) {
+			MyHtmlParser parser = new MyHtmlParser(back);
+			MemberGroup tempMembers = parser.parseAddExpense(wbw.getGroupMembers());
+			ArrayList<MemberGroup> groupLists = parser.parseGroupLists();
+			if (tempMembers != null && groupLists != null) {
+				for (WBWList wL : wbwInitialize.getWbwLists()) {
+					if (wL.getHTML().equals(wbw.getHTML())) {
+						wL.setGroupMembers(tempMembers);
+						wL.setGroupLists(groupLists);
+					}
+				}
+			}
+			System.out.println("Uid: "+wbwInitialize);
+		}		
+	}
+
+	/**
+	 * This private class, makes sure that the network connections are made on a separate thread.
+	 * @author Vincent
+	 *
+	 */
+	private class AsyncRetrieveMemberStatus extends AsyncTask<WBWList, Void, String> {
+		WBWList wbw = null;
+
+		protected String doInBackground(WBWList... w) {
+			wbw = w[0];
+			return retrieveHtmlPage(wbw.getHTML().replace("balance","members"));
+		}
+
+		protected void onPostExecute(String back) {
+			MyHtmlParser parser = new MyHtmlParser(back);
+			for (WBWList wL : wbwInitialize.getWbwLists()) {
+				if (wL.getHTML().equals(wbw.getHTML())) {
+					wL.setGroupMembers(parser.parseEditGroup(wbw.getGroupMembers()));			
+				}
+			}
+			System.out.println("Status: "+wbwInitialize);
+		}		
 	}
 }

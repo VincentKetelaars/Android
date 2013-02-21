@@ -75,12 +75,12 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 			member.setBalance(0.0);		
 		
 		// Set spender balance
-		if (member.getMember().equals(spender) && getTotalCount() > 0) {
+		if (member.getName().equals(spender) && getTotalCount() > 0) {
 			member.setBalance(amount * (getTotalCount() - member.getCount()) / getTotalCount());
 		}
 		
 		// Set the textview text
-		name.setText(member.getMember()+" (€ "+df.format(member.getBalance())+")");
+		name.setText(member.getName()+" (€ "+df.format(member.getBalance())+")");
 		
 		// Set the spinner selection
 		spinner.setSelection(member.getCount());
@@ -111,7 +111,7 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 		boolean changed = false;
 		String name = (String) ((TextView) ((TableRow) arg0.getParent()).getChildAt(0)).getText();
 		for (Member m : getMembers()) {
-			if (m.getMember().equals(name.split("\\s\\(")[0])) {
+			if (m.getName().equals(name.split("\\s\\(")[0])) {
 				if (m.getCount()!=arg2)
 					changed=true;
 				m.setCount(arg2);
@@ -149,7 +149,7 @@ public class AddMemberListAdapter extends ArrayAdapter<Member> implements OnItem
 	public void setAllCount(MemberGroup memberGroup) {
 		for (Member m : getMembers()) {
 			for (Member n : memberGroup.getGroupMembers()) {
-				if (m.getId() == n.getId()) {
+				if (m.getUid() == n.getUid()) {
 					m.setCount(n.getCount());
 					break;
 				}

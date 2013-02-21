@@ -6,56 +6,62 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Member implements Parcelable, Serializable {
-	private String member;
+	private String name;
 	private double balance;
 	private int count;
-	private int id;
+	private int uid;
 	private String email;
 	private int activated; // -1 is not initialized, 0 is not activated, 1 is activated
+	private long lastUpdate;
 
 	public Member(String name) {
-		setMember(name);
+		setName(name);
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(0);
-		setId(-1);
+		setUid(-1);
 		setEmail(null);
 		setActivated(-1);
+		setLastUpdate(System.currentTimeMillis());
 	}
 	
 	public Member(String name, int count) {
-		setMember(name);
+		setName(name);
 		setBalance(Double.MAX_VALUE); // This value should never be used!
 		setCount(count);
-		setId(-1);
+		setUid(-1);
 		setEmail(null);
 		setActivated(-1);
+		setLastUpdate(System.currentTimeMillis());
 	}
 
 	public Member(String name, double amount) {
-		setMember(name);
+		setName(name);
 		setBalance(amount);
 		setCount(0);
-		setId(-1);
+		setUid(-1);
 		setEmail(null);
 		setActivated(-1);
+		setLastUpdate(System.currentTimeMillis());
 	}
 	
 	public Member(String name, double amount, String email, int id, int activated) {
-		setMember(name);
+		setName(name);
 		setBalance(amount);
 		setCount(0);
-		setId(id);
+		setUid(id);
 		setEmail(email);
 		setActivated(activated);
+		setLastUpdate(System.currentTimeMillis());
 	}
 	
 	public Member(String name, double amount, int count, int id) {
-		setMember(name);
+		setName(name);
 		setBalance(amount);
 		setCount(count);
-		setId(id);
+		setUid(id);
 		setEmail(null);
 		setActivated(-1);
+		setLastUpdate(System.currentTimeMillis());
 	}
 
 	/**
@@ -66,12 +72,12 @@ public class Member implements Parcelable, Serializable {
 		readFromParcel(in);
 	}
 
-	public String getMember() {
-		return member;
+	public String getName() {
+		return name;
 	}
 
-	public void setMember(String member) {
-		this.member = member;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public double getBalance() {
@@ -90,16 +96,40 @@ public class Member implements Parcelable, Serializable {
 		this.count = count;
 	}
 
-	public int getId() {
-		return id;
+	public int getUid() {
+		return uid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setUid(int id) {
+		this.uid = id;
 	}
 
 	public String toString() {
-		return "<("+getMember()+", "+getBalance()+", "+getCount()+", "+getId()+")>";
+		return "<("+getName()+", "+getBalance()+", "+getCount()+", "+getUid()+", "+getEmail()+", "+getActivated()+")>";
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int getActivated() {
+		return activated;
+	}
+
+	public void setActivated(int activated) {
+		this.activated = activated;
+	}
+
+	public long getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(long lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	/**
@@ -113,12 +143,13 @@ public class Member implements Parcelable, Serializable {
 	 * This method writes each instance to the Parcel. This method takes a Parcel, and some kind of flag integer.
 	 */
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(member);
+		dest.writeString(name);
 		dest.writeDouble(balance);
 		dest.writeInt(count);
-		dest.writeInt(id);
+		dest.writeInt(uid);
 		dest.writeString(email);
 		dest.writeInt(activated);
+		dest.writeLong(lastUpdate);
 	}
 
 	/**
@@ -126,28 +157,13 @@ public class Member implements Parcelable, Serializable {
 	 * @param in (Parcel)
 	 */
 	public void readFromParcel(Parcel in) {		
-		member = in.readString();
+		name = in.readString();
 		balance = in.readDouble();
 		count = in.readInt();
-		id = in.readInt();
+		uid = in.readInt();
 		email = in.readString();
 		activated = in.readInt();
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public int isActivated() {
-		return activated;
-	}
-
-	public void setActivated(int activated) {
-		this.activated = activated;
+		lastUpdate = in.readLong();
 	}
 
 	/**
@@ -163,5 +179,19 @@ public class Member implements Parcelable, Serializable {
 			return new Member[size];
 		}
 	};
+
+	public boolean mergeMember(Member m) {
+		setBalance(m.getBalance());
+		if (m.getCount() != 0)
+			setCount(m.getCount());
+		if (m.getUid() != -1)
+			setUid(m.getUid());
+		if (m.getEmail() != null)
+			setEmail(m.getEmail());
+		if (m.getActivated() != -1)
+			setActivated(m.getActivated());
+		setLastUpdate(System.currentTimeMillis());		
+		return false;
+	}
 
 }

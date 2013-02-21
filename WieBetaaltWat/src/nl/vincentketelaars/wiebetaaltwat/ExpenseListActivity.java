@@ -119,8 +119,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 				wbwList.setGroupMembers(members);
 			ArrayList<Integer> resultsPerPage = parser.getResultsPerPage();
 			if (resultsPerPage != null) {
-				wbwList.setNumResults(resultsPerPage.remove(0));
-				// The duplicate element is removed
+				wbwList.setNumResults(resultsPerPage.remove(0)); // The duplicate element is removed
 				wbwList.setResultsPerPage(resultsPerPage);
 			}
 			wbwList.setPages(parser.getNumPages());			
@@ -178,7 +177,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1,	int arg2, long arg3) {
-				expenseListViewAdapter.setFilterName(wbwList.getGroupMembers().getMember(arg2).getMember());
+				expenseListViewAdapter.setFilterName(wbwList.getGroupMembers().getMember(arg2).getName());
 				showFilteredMessage();
 			}
 		};	
@@ -310,7 +309,7 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 	private void showFilteredMessage() {
 		FilterStyle style = expenseListViewAdapter.getFilterStyle();
 		if (expenseListViewAdapter.getFilterName() == null)
-			expenseListViewAdapter.setFilterName(wbwList.getMe().getMember());
+			expenseListViewAdapter.setFilterName(wbwList.getMe().getName());
 		String filteredOn = getResources().getString(R.string.filtered_on);
 		filteredOn = filteredOn.replace("NAME", expenseListViewAdapter.getFilterName());
 		switch (style) {
@@ -787,14 +786,14 @@ public class ExpenseListActivity extends Activity implements android.view.View.O
 		View dialogView = inflater.inflate(R.layout.modify_member, null);
 		builder.setView(dialogView);
 		final EditText editName = (EditText) dialogView.findViewById(R.id.modify_member_name_edit);
-		editName.setText(m.getMember());
+		editName.setText(m.getName());
 		final EditText editEmail = (EditText) dialogView.findViewById(R.id.modify_member_email_edit);	
 		editEmail.setText(m.getEmail());
 		final Button deleteMember = (Button) dialogView.findViewById(R.id.modify_member_delete);
 		final Button modifyMember = (Button) dialogView.findViewById(R.id.modify_member_modify);
 		deleteMember.getBackground().setColorFilter(new LightingColorFilter(0xFFFF0000, 0x00FF0000));
 		deleteMember.setEnabled(((int) (m.getBalance() * 100)) == 0);
-		modifyMember.setEnabled(m.isActivated() == 0);
+		modifyMember.setEnabled(m.getActivated() == 0);
 		builder.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {			
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();		

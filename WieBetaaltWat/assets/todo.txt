@@ -19,3 +19,6 @@ email if something goes wrong?
 share with friends
 
 Sort expenses on time, amount 
+
+notifications
+

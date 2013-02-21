@@ -52,7 +52,7 @@ public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListen
 		TextView nameTextView = (TextView) x.findViewById(R.id.button_member_name);
 		TextView balanceTextView = (TextView) x.findViewById(R.id.button_member_balance);
 
-		nameTextView.setText(members.get(position).getMember());
+		nameTextView.setText(members.get(position).getName());
 
 		DecimalFormat df = new DecimalFormat();
 		df.setMinimumFractionDigits(2);
@@ -74,7 +74,7 @@ public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListen
 		LinearLayout l = (LinearLayout) v;
 		TextView t = (TextView) l.getChildAt(0);	
 		for (int i = 0; i < getCount(); i++) {
-			if (members.get(i).getMember().equals(t.getText().toString())) {
+			if (members.get(i).getName().equals(t.getText().toString())) {
 				mOnItemClickListener.onItemClick(mListView, v, i, i);
 				break;
 			}
@@ -101,7 +101,7 @@ public class MemberAdapter extends ArrayAdapter<Member> implements OnClickListen
 		LinearLayout l = (LinearLayout) v;
 		TextView t = (TextView) l.getChildAt(0);	
 		for (int i = 0; i < getCount(); i++) {
-			if (members.get(i).getMember().equals(t.getText().toString())) {
+			if (members.get(i).getName().equals(t.getText().toString())) {
 				mOnItemLongClickListener.onItemLongClick(mListView, v, i, i);
 				return true;
 			}

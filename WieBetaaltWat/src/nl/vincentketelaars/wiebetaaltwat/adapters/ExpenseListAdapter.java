@@ -94,7 +94,7 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 		description.setText(expense.getDescription());
 		amount.setText("€ "+df.format(expense.getAmount()));
 		date.setText(expense.getDate());
-		participants.setText(expense.memberNames());
+		participants.setText(expense.getParticipants().memberNames());
 
 		return row;
 	}
@@ -120,12 +120,12 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 				}
 				break;
 			case PARTICIPANTS:
-				if (e.participantsContain(filter)) {
+				if (e.getParticipants().hasMember(filter)) {
 					temp.add(e);
 				}
 				break;
 			case BOTH:
-				if (e.getSpender().equals(filter) || e.participantsContain(filter)) {
+				if (e.getSpender().equals(filter) || e.getParticipants().hasMember(filter)) {
 					temp.add(e);
 				}
 				break;
@@ -151,8 +151,8 @@ public class ExpenseListAdapter extends ArrayAdapter<Expense> {
 	 * Set the name to be filtered.
 	 * @param member
 	 */
-	public void setFilterName(String member) {
-		this.filter = member;	
+	public void setFilterName(String name) {
+		this.filter = name;	
 		this.filter();		
 	}
 	

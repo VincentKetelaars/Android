@@ -126,6 +126,7 @@ public class LogInActivity extends Activity implements OnClickListener {
 	 */
 	private void onShortcutClicked() {
 		createConnection();
+		mService.initialize(email, password);
 	}
 
 	/**
