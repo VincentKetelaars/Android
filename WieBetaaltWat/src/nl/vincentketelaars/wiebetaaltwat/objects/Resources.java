@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 public class Resources {
 	// Private file
-	public final static String privateFile = "my_private_file";
+	public final static String privateFile = "my_private_file_v6"; // my_private_file is already used, use version number
 	// SharedPreferences
 	public final static String inlogFile = "Inlog";
 	// WBW Url

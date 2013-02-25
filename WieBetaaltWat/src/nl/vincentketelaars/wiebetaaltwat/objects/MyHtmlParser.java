@@ -336,9 +336,8 @@ public class MyHtmlParser {
 		double myBalance = Double.parseDouble(userBalance.getElementsByTag("strong").get(0).text().substring(2).replace(",", "."));
 		members.add(new Member(me, myBalance));
 		for (Element e : memberBalances.getElementsByTag("p")) {
-			if (e.getElementsByTag("span").size() != 1)
-				continue;
-			String member = e.child(0).text();
+			Elements span = e.getElementsByTag("span");
+			String member = span.get(0).text();
 			double balance = Double.parseDouble(e.child(1).text().substring(2).replace(",", "."));
 			members.add(new Member(member, balance));
 		}		

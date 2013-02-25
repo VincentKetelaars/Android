@@ -56,6 +56,18 @@ public class WBW implements Serializable, Parcelable {
 		public void setLastUpdate(long lastUpdate) {
 			this.lastUpdate = lastUpdate;
 		}
+		
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("<("+email+", "+password+", \n");
+			if (wbwLists != null) {
+				for (WBWList wL : wbwLists) {
+					sb.append(wL+", \n");
+				}
+			}
+			sb.append(lastUpdate+")>");
+			return sb.toString();
+		}
 
 		/**
 		 * This is a mandatory method with the parcelable interface

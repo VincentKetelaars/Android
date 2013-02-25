@@ -46,10 +46,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
-import android.os.Parcelable;
-import android.view.Gravity;
-import android.widget.Toast;
 
 /**
  * This Service is to remain active throughout the use of the application. Each activity should be able to bind to it. After binding, each activity can use any method needed,
@@ -64,7 +62,7 @@ public class ConnectionService extends Service {
 	private IBinder mBinder;
 	private WBW wbw;
 	private WBW wbwInitialize;
-	private int numberOfExpenses = 1000;
+	private int numberOfExpenses = 5;
 
 
 	/**
@@ -221,6 +219,7 @@ public class ConnectionService extends Service {
 			post.setEntity(new UrlEncodedFormEntity(arguments));
 			HttpResponse response = client.execute(post);
 			result = getResponseBody(response.getEntity());
+			response.getEntity().consumeContent();
 		}
 		catch (URISyntaxException e){
 			e.printStackTrace();
@@ -250,6 +249,7 @@ public class ConnectionService extends Service {
 			post.setURI(new URI(Resources.WBWUrl+html));
 			HttpResponse response = client.execute(post);
 			result = getResponseBody(response.getEntity());
+			response.getEntity().consumeContent();
 		}
 		catch (URISyntaxException e){
 			e.printStackTrace();
@@ -415,7 +415,11 @@ public class ConnectionService extends Service {
 			wbwInitialize.setWbwLists(temp);
 			if (wbwInitialize.getWbwLists() != null) {
 				for (WBWList wL : wbwInitialize.getWbwLists()) {
-					new AsyncExpenses().execute(new WBWList[]{wL});					
+					if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+						new AsyncExpenses().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
+					} else {
+						new AsyncExpenses().execute(new WBWList[]{wL});	
+					}
 				}					
 			}
 			System.out.println("WBWLists: "+wbwInitialize);
@@ -452,12 +456,17 @@ public class ConnectionService extends Service {
 							wL.setResultsPerPage(resultsPerPage);
 						}
 						wL.setPages(parser.getNumPages());
-						new AsyncRetrieveMemberUid().execute(new WBWList[]{wL});
-						new AsyncRetrieveMemberStatus().execute(new WBWList[]{wL});
+						if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+							new AsyncRetrieveMemberUid().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
+							new AsyncRetrieveMemberStatus().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
+						} else {
+							new AsyncRetrieveMemberUid().execute(new WBWList[]{wL});	
+							new AsyncRetrieveMemberStatus().execute(new WBWList[]{wL});	
+						}
 					}
 				}
 			}
-			System.out.println("Expenses: "+wbwInitialize);
+			System.out.println(correctInput+" "+wbw.getHTML()+" "+back+" Expenses: "+wbwInitialize);
 		}
 	}
 

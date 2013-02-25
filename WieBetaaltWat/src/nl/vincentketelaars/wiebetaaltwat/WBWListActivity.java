@@ -278,7 +278,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 	 * @param wbwlist
 	 */
 	private void outputWBWList(String file, List<WBWList> wbwlist) {
-		try {
+		/*try {
 			FileOutputStream fileOut = openFileOutput(file, Context.MODE_PRIVATE);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(wbwlist);
@@ -288,7 +288,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**

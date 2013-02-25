@@ -307,12 +307,12 @@ public class LogInActivity extends Activity implements OnClickListener {
 	 * This method will create a file, holding an email and password.
 	 */
 	private void createInlogFile() {
-		SharedPreferences settings = getSharedPreferences(Resources.inlogFile, MODE_PRIVATE);
+		/*SharedPreferences settings = getSharedPreferences(Resources.inlogFile, MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("useInlogFile", true);
 		editor.putString("Email", email);
 		editor.putString("Password", password);
-		editor.commit();
+		editor.commit();*/
 	}
 
 	/**
