@@ -1,17 +1,18 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import java.util.ArrayList;
 
-import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
+import nl.vincentketelaars.wiebetaaltwat.R;
+import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.ExpenseListAdapter;
 import nl.vincentketelaars.wiebetaaltwat.adapters.ExpenseListAdapter.FilterStyle;
 import nl.vincentketelaars.wiebetaaltwat.adapters.MemberAdapter;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
+import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.views.HorizontalListView;
 import android.app.Activity;
 import android.app.AlertDialog;

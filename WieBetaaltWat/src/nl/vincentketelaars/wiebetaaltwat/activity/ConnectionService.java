@@ -1,4 +1,4 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,10 +18,11 @@ import java.util.List;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
+import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
+import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
 
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -32,7 +33,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -80,7 +87,18 @@ public class ConnectionService extends Service {
 		// in milliseconds which is the timeout for waiting for data.
 		int timeoutSocket = 5000;
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-		client = new DefaultHttpClient(httpParameters);
+		// Set maximum number of connections
+		ConnManagerParams.setMaxTotalConnections(httpParameters, 100);
+		
+		 // Create and initialize scheme registry 
+        SchemeRegistry schemeRegistry = new SchemeRegistry();
+        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+        
+        // Create an HttpClient with the ThreadSafeClientConnManager.
+        // This connection manager must be used if more than one thread will
+        // be using the HttpClient.
+        ClientConnectionManager cm = new ThreadSafeClientConnManager(httpParameters, schemeRegistry);
+		client = new DefaultHttpClient(cm, httpParameters);
 		mBinder = new LocalBinder();
 	}
 
@@ -106,7 +124,7 @@ public class ConnectionService extends Service {
 	}
 
 
-	public void initialize(String email, String password) {
+	public void initialize(MyResultReceiver mReceiver, String email, String password) {
 		wbw = new WBW(new ArrayList<WBWList>());
 		WBW temp = inputWBWList(Resources.privateFile);
 		if (temp != null && email.equals(temp.getEmail()) && password.equals(temp.getPassword())) {
@@ -410,19 +428,20 @@ public class ConnectionService extends Service {
 		}
 
 		protected void onPostExecute(String back) {
+			System.out.println("Done WBWList ");
 			MyHtmlParser parser = new MyHtmlParser(back);
 			ArrayList<WBWList> temp = parser.parseTheWBWLists();
 			wbwInitialize.setWbwLists(temp);
 			if (wbwInitialize.getWbwLists() != null) {
 				for (WBWList wL : wbwInitialize.getWbwLists()) {
+					System.out.println("Start Expenses "+wL.getListName());
 					if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
 						new AsyncExpenses().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
 					} else {
 						new AsyncExpenses().execute(new WBWList[]{wL});	
 					}
 				}					
-			}
-			System.out.println("WBWLists: "+wbwInitialize);
+			}			
 		}		
 	}
 
@@ -457,46 +476,14 @@ public class ConnectionService extends Service {
 						}
 						wL.setPages(parser.getNumPages());
 						if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-							new AsyncRetrieveMemberUid().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
 							new AsyncRetrieveMemberStatus().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
 						} else {
-							new AsyncRetrieveMemberUid().execute(new WBWList[]{wL});	
 							new AsyncRetrieveMemberStatus().execute(new WBWList[]{wL});	
 						}
 					}
 				}
 			}
-			System.out.println(correctInput+" "+wbw.getHTML()+" "+back+" Expenses: "+wbwInitialize);
 		}
-	}
-
-	/**
-	 * This private class, makes sure that the network connections are made on a separate thread.
-	 * @author Vincent
-	 *
-	 */
-	private class AsyncRetrieveMemberUid extends AsyncTask<WBWList, Void, String> {
-		WBWList wbw = null;
-
-		protected String doInBackground(WBWList... w) {
-			wbw = w[0];
-			return retrieveHtmlPage(wbw.getHTML().replace("balance","transaction&type=add"));
-		}
-
-		protected void onPostExecute(String back) {
-			MyHtmlParser parser = new MyHtmlParser(back);
-			MemberGroup tempMembers = parser.parseAddExpense(wbw.getGroupMembers());
-			ArrayList<MemberGroup> groupLists = parser.parseGroupLists();
-			if (tempMembers != null && groupLists != null) {
-				for (WBWList wL : wbwInitialize.getWbwLists()) {
-					if (wL.getHTML().equals(wbw.getHTML())) {
-						wL.setGroupMembers(tempMembers);
-						wL.setGroupLists(groupLists);
-					}
-				}
-			}
-			System.out.println("Uid: "+wbwInitialize);
-		}		
 	}
 
 	/**
@@ -519,7 +506,6 @@ public class ConnectionService extends Service {
 					wL.setGroupMembers(parser.parseEditGroup(wbw.getGroupMembers()));			
 				}
 			}
-			System.out.println("Status: "+wbwInitialize);
 		}		
 	}
 }

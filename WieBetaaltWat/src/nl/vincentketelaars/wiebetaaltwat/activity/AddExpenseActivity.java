@@ -1,4 +1,4 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -7,14 +7,15 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
+import nl.vincentketelaars.wiebetaaltwat.R;
+import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.AddMemberListAdapter;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
+import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.views.Calculator;
 import android.app.Activity;
 import android.app.AlertDialog;

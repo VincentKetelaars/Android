@@ -1,8 +1,10 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
-import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
-import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
+import nl.vincentketelaars.wiebetaaltwat.R;
+import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
+import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
+import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -13,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.View;
@@ -30,7 +33,7 @@ import android.widget.Toast;
  * @author Vincent
  *
  */
-public class LogInActivity extends Activity implements OnClickListener {
+public class LogInActivity extends Activity implements OnClickListener, MyResultReceiver.Receiver  {
 
 	// View Fields
 	private TextView loginTitle;
@@ -53,6 +56,7 @@ public class LogInActivity extends Activity implements OnClickListener {
 	// Service
 	private boolean mBound;
 	private ConnectionService mService;
+	public MyResultReceiver mReceiver;
 
 	/**
 	 * Sets the contentview. In addition the view elements are initialized.
@@ -68,6 +72,10 @@ public class LogInActivity extends Activity implements OnClickListener {
 
 		// Bind to the ConnectionService
 		bindToService();
+
+		// Create MyResultReceiver
+		mReceiver = new MyResultReceiver(new Handler());
+		mReceiver.setReceiver(this);
 
 		// Link the views from the xml login file and set listeners
 		loginTitle = (TextView) findViewById(R.id.log_in_title);
@@ -126,7 +134,7 @@ public class LogInActivity extends Activity implements OnClickListener {
 	 */
 	private void onShortcutClicked() {
 		createConnection();
-		mService.initialize(email, password);
+		mService.initialize(mReceiver, email, password);
 	}
 
 	/**
@@ -372,5 +380,9 @@ public class LogInActivity extends Activity implements OnClickListener {
 		progressDialog.setMessage(getResources().getString(R.string.loading));
 		progressDialog.setCancelable(false);
 		progressDialog.show();
+	}
+
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+
 	}
 }

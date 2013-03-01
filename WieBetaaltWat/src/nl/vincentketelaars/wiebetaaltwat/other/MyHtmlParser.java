@@ -1,8 +1,13 @@
-package nl.vincentketelaars.wiebetaaltwat.objects;
+package nl.vincentketelaars.wiebetaaltwat.other;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
+import nl.vincentketelaars.wiebetaaltwat.objects.Member;
+import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
+import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -174,13 +179,15 @@ public class MyHtmlParser {
 		Elements tr = membersAdmin.get(0).getElementsByTag("tr");
 		for (int i = 1; i < tr.size(); i++) {
 			Elements input = tr.get(i).getElementsByTag("input");
-			String active = tr.get(i).attr("class");				
-			String name = input.get(3).text();
-			String email = input.get(4).text();
+			boolean notActive = tr.get(i).getElementsByTag("td").get(0).attr("class").contains("not-activated");			
+			int id = Integer.parseInt(input.get(0).attr("value"));
+			String name = input.get(3).attr("value");
+			String email = input.get(4).attr("value");
 			for (Member m : memberGroup.getGroupMembers()) {
 				if (m.getName().equals(name)) {
 					m.setEmail(email);
-					if (active == null)
+					m.setUid(id);
+					if (notActive)
 						m.setActivated(0);
 					else 
 						m.setActivated(1);

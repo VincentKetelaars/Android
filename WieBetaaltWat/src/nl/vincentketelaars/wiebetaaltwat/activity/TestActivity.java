@@ -1,4 +1,4 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import android.app.Activity;
 import android.os.Bundle;

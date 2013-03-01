@@ -1,4 +1,4 @@
-package nl.vincentketelaars.wiebetaaltwat;
+package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.vincentketelaars.wiebetaaltwat.ConnectionService.LocalBinder;
+import nl.vincentketelaars.wiebetaaltwat.R;
+import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.WBWListAdapter;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
+import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
