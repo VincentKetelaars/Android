@@ -2,10 +2,8 @@ package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +14,10 @@ import nl.vincentketelaars.wiebetaaltwat.R;
 import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.adapters.WBWListAdapter;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
+import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
+import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -32,8 +31,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.ResultReceiver;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -61,7 +62,7 @@ import android.widget.Toast;
  * @author Vincent
  *
  */
-public class WBWListActivity extends Activity implements android.view.View.OnClickListener{
+public class WBWListActivity extends Activity implements android.view.View.OnClickListener, MyResultReceiver.Receiver{
 
 	// Global instances
 	private List<WBWList> WBWLists;
@@ -84,6 +85,9 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 
 	//Activity for result
 	private final int myRequestCode = 1;
+	
+	// Receiver
+	private MyResultReceiver mReceiver;
 
 	/** 
 	 * Called when the activity is first created. 
@@ -104,13 +108,16 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 			MyHtmlParser parser = new MyHtmlParser(MyListOfWBWListsHTML);
 			WBWLists = parser.parseTheWBWLists();
 		}
-		bindToService();
 		if (Build.VERSION.SDK_INT < 11) {
 			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_title_bar);
 			refreshButton = (Button) findViewById(R.id.refresh_button);
 			refreshButton.setOnClickListener(this);
 		}
+		// Create MyResultReceiver
+		mReceiver = new MyResultReceiver(new Handler());
+		mReceiver.setReceiver(this);
 
+		bindToService();
 		progressDialog = new ProgressDialog(this);
 	}
 
@@ -189,7 +196,10 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 	private void bindToService() {
 		Thread t = new Thread(){
 			public void run(){
-				getApplicationContext().bindService(new Intent(getApplicationContext(), ConnectionService.class), mConnection, Context.BIND_AUTO_CREATE);
+				Intent intent = new Intent(Intent.ACTION_SYNC, null, getApplicationContext(), ConnectionService.class);
+				intent.putExtra("receiver", mReceiver);
+				getApplicationContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+				getApplicationContext().startService(intent);
 			}
 		};
 		t.start();
@@ -610,5 +620,15 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		}
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 		public void onTextChanged(CharSequence s, int start, int before, int count) {}		
+	}
+
+	public void onReceiveResult(int resultCode, Bundle resultData) {
+		System.out.println("Ik krijg helemaal niks..");
+		switch (resultCode) {
+		case 1:
+			Resources.showToast(this, "Yeah Baby!", Gravity.CENTER, Toast.LENGTH_LONG);
+			break;
+		}
+		
 	}
 }

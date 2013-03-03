@@ -1,4 +1,4 @@
-package nl.vincentketelaars.wiebetaaltwat.objects;
+package nl.vincentketelaars.wiebetaaltwat.other;
 
 import android.content.Context;
 import android.widget.Toast;

@@ -18,11 +18,11 @@ import java.util.List;
 import nl.vincentketelaars.wiebetaaltwat.objects.Expense;
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
-import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
+import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -54,7 +54,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.ResultReceiver;
 
 /**
  * This Service is to remain active throughout the use of the application. Each activity should be able to bind to it. After binding, each activity can use any method needed,
@@ -70,6 +72,7 @@ public class ConnectionService extends Service {
 	private WBW wbw;
 	private WBW wbwInitialize;
 	private int numberOfExpenses = 5;
+	private ResultReceiver mReceiver;
 
 
 	/**
@@ -99,7 +102,14 @@ public class ConnectionService extends Service {
         // be using the HttpClient.
         ClientConnectionManager cm = new ThreadSafeClientConnManager(httpParameters, schemeRegistry);
 		client = new DefaultHttpClient(cm, httpParameters);
-		mBinder = new LocalBinder();
+		mBinder = new LocalBinder();		
+		System.out.println("Dit gaat wel..");
+	}
+	
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		mReceiver = intent.getParcelableExtra("receiver");
+		System.out.println("Ik kom hier..");
+		return START_STICKY;
 	}
 
 	/**
@@ -110,6 +120,7 @@ public class ConnectionService extends Service {
 	public class LocalBinder extends Binder {
 		protected ConnectionService getService() {
 			// Return this instance of LocalService so clients can call public methods
+			System.out.println("Wouw, weer een Localbinder?");
 			return ConnectionService.this;
 		}
 	}
@@ -119,12 +130,12 @@ public class ConnectionService extends Service {
 	 */
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
+		System.out.println("He ik word weer gebonden..!");
 		return mBinder;
 	}
 
 
-	public void initialize(MyResultReceiver mReceiver, String email, String password) {
+	public void initialize(String email, String password) {
 		wbw = new WBW(new ArrayList<WBWList>());
 		WBW temp = inputWBWList(Resources.privateFile);
 		if (temp != null && email.equals(temp.getEmail()) && password.equals(temp.getPassword())) {
@@ -428,13 +439,11 @@ public class ConnectionService extends Service {
 		}
 
 		protected void onPostExecute(String back) {
-			System.out.println("Done WBWList ");
 			MyHtmlParser parser = new MyHtmlParser(back);
 			ArrayList<WBWList> temp = parser.parseTheWBWLists();
 			wbwInitialize.setWbwLists(temp);
 			if (wbwInitialize.getWbwLists() != null) {
 				for (WBWList wL : wbwInitialize.getWbwLists()) {
-					System.out.println("Start Expenses "+wL.getListName());
 					if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
 						new AsyncExpenses().executeOnExecutor(THREAD_POOL_EXECUTOR, new WBWList[]{wL});	
 					} else {
@@ -482,6 +491,9 @@ public class ConnectionService extends Service {
 						}
 					}
 				}
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("wbw", wbwInitialize);
+				mReceiver.send(1, bundle);
 			}
 		}
 	}

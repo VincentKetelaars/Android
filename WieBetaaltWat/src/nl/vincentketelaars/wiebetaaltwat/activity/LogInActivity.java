@@ -2,9 +2,9 @@ package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import nl.vincentketelaars.wiebetaaltwat.R;
 import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
-import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
+import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -56,7 +56,7 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	// Service
 	private boolean mBound;
 	private ConnectionService mService;
-	public MyResultReceiver mReceiver;
+	private MyResultReceiver mReceiver;
 
 	/**
 	 * Sets the contentview. In addition the view elements are initialized.
@@ -70,13 +70,13 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 			setContentView(R.layout.login);	
 		}
 
-		// Bind to the ConnectionService
-		bindToService();
-
 		// Create MyResultReceiver
 		mReceiver = new MyResultReceiver(new Handler());
 		mReceiver.setReceiver(this);
 
+		// Bind to the ConnectionService
+		bindToService();
+		
 		// Link the views from the xml login file and set listeners
 		loginTitle = (TextView) findViewById(R.id.log_in_title);
 		fastLoginTitle = (TextView) findViewById(R.id.fast_log_in_title);
@@ -133,8 +133,8 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	 * This method is called when the shortcut button is clicked. This method will return the result of the server to the handler method.
 	 */
 	private void onShortcutClicked() {
-		createConnection();
-		mService.initialize(mReceiver, email, password);
+		createConnection();		
+		mService.initialize(email, password);
 	}
 
 	/**
@@ -345,7 +345,10 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	private void bindToService() {
 		Thread t = new Thread(){
 			public void run(){
-				getApplicationContext().bindService(new Intent(getApplicationContext(), ConnectionService.class), mConnection, Context.BIND_AUTO_CREATE);
+				Intent intent = new Intent(Intent.ACTION_SYNC, null, getApplicationContext(), ConnectionService.class);
+				intent.putExtra("receiver", mReceiver);
+				getApplicationContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+				getApplicationContext().startService(intent);
 			}
 		};
 		t.start();
@@ -383,6 +386,6 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-
+		System.out.println("Ik krijg lekker wel wat..");
 	}
 }
