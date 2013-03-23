@@ -2,6 +2,7 @@ package nl.vincentketelaars.wiebetaaltwat.activity;
 
 import nl.vincentketelaars.wiebetaaltwat.R;
 import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
+import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
 import nl.vincentketelaars.wiebetaaltwat.other.Resources;
@@ -76,7 +77,7 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 
 		// Bind to the ConnectionService
 		bindToService();
-		
+
 		// Link the views from the xml login file and set listeners
 		loginTitle = (TextView) findViewById(R.id.log_in_title);
 		fastLoginTitle = (TextView) findViewById(R.id.fast_log_in_title);
@@ -133,8 +134,7 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	 * This method is called when the shortcut button is clicked. This method will return the result of the server to the handler method.
 	 */
 	private void onShortcutClicked() {
-		createConnection();		
-		mService.initialize(email, password);
+		createConnection();
 	}
 
 	/**
@@ -212,13 +212,15 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	 * @return server response
 	 */
 	private void createConnection() {
-		if (!mService.isOnline()) {
-			Resources.showToast(this, getResources().getString(R.string.not_connected), Gravity.CENTER, Toast.LENGTH_SHORT);
-			continueWithoutConnection();
-			return;
-		}
+		mService.initialize(email, password); 
+		if (inlogDataEqualPrevious()) {
+			WBW wbw = mService.getWbw();
+			if (!wbw.getWbwLists().isEmpty()) {
+				Intent intent = new Intent(this,WBWListActivity.class);
+				startActivity(intent);
+			} 
+		} 
 		showProgressDialog();
-		new AsyncLogin().execute(new String[]{"bla"});
 	}
 
 	/**
@@ -227,45 +229,7 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	 * @param back, which is the server return string.
 	 */
 	private void handleReturn(String back) {
-		MyHtmlParser parser = new MyHtmlParser(back);
-		if (parser.correctInputWBWLists()) {
-			if (rememberMe.isChecked()) {
-				createInlogFile();
-			}
-			Intent intent = new Intent(this,WBWListActivity.class);
-			intent.putExtra("MyLists", back);
-			startActivity(intent);
-		} else {
-			// If the user can continue, there is no need for further Toasts.
-			if (continueWithoutConnection())
-				return;
-			if (back == null)
-				Resources.showToast(this, getResources().getString(R.string.login_request_failed), Gravity.CENTER, Toast.LENGTH_SHORT);
-			else if (parser.loginFailed())
-				Resources.showToast(this, getResources().getString(R.string.login_data_incorrect), Gravity.CENTER, Toast.LENGTH_SHORT);
-			else 
-				Resources.showToast(this, getResources().getString(R.string.login_request_failed), Gravity.CENTER, Toast.LENGTH_SHORT);
-		}			
-	}
 
-	/**
-	 * If the user has no connection to the Internet, he might still use this app if previous data is available.
-	 */
-	private boolean continueWithoutConnection(){
-		boolean fileExists = false;
-		for (String x : fileList()) {
-			if (x.equals(Resources.privateFile)) {
-				fileExists = true;
-				break;
-			}
-		}
-		// Check whether the file containing the WBWList exists. If so, check whether the email and password are equal to the ones in the Shared Preferences. 
-		if (fileExists && inlogDataEqualPrevious()) {
-			Intent intent = new Intent(this,WBWListActivity.class);
-			startActivity(intent);
-			return true;
-		} 
-		return false;
 	}
 
 	/**
@@ -312,18 +276,6 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	}
 
 	/**
-	 * This method will create a file, holding an email and password.
-	 */
-	private void createInlogFile() {
-		/*SharedPreferences settings = getSharedPreferences(Resources.inlogFile, MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean("useInlogFile", true);
-		editor.putString("Email", email);
-		editor.putString("Password", password);
-		editor.commit();*/
-	}
-
-	/**
 	 * This is a private ServiceConnection class. Only the mandatory methods are implemented. 
 	 */
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -352,27 +304,6 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 			}
 		};
 		t.start();
-	}	
-
-	/**
-	 * This private class, makes sure that the network connections are made on a separate thread.
-	 * @author Vincent
-	 *
-	 */
-	private class AsyncLogin extends AsyncTask<String, Void, String> {				
-		protected String doInBackground(String... s) {
-			String back = null;
-			if (mBound && mService != null) {
-				back = mService.logOnToSite(email,password);				
-			}
-			return back;
-		}
-
-		protected void onPostExecute(String back) {
-			if (progressDialog != null && progressDialog.isShowing())
-				progressDialog.dismiss();
-			handleReturn(back);
-		}		
 	}
 
 	/**
@@ -386,6 +317,16 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	}
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
-		System.out.println("Ik krijg lekker wel wat..");
+		switch (resultCode) {
+		case 1:
+			WBW wbw = resultData.getParcelable("wbw");
+			if (!wbw.getWbwLists().isEmpty()) {
+				Intent intent = new Intent(this,WBWListActivity.class);
+				startActivity(intent);
+			} else {
+				Resources.showToast(this, getResources().getString(R.string.login_request_failed), Gravity.CENTER, Toast.LENGTH_SHORT);	
+			}
+			break;
+		}
 	}
 }

@@ -66,7 +66,6 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 
 	// Global instances
 	private List<WBWList> WBWLists;
-	private String MyListOfWBWListsHTML;
 	private ListView listView;
 	private Button refreshButton;
 	private ProgressDialog progressDialog;
@@ -101,13 +100,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 			requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		} 
 		setContentView(R.layout.wbw_lists_view);
-		Bundle bundle = getIntent().getExtras();
-		if (bundle != null)
-			MyListOfWBWListsHTML = bundle.getString("MyLists");		
-		if (MyListOfWBWListsHTML != null) {
-			MyHtmlParser parser = new MyHtmlParser(MyListOfWBWListsHTML);
-			WBWLists = parser.parseTheWBWLists();
-		}
+			
 		if (Build.VERSION.SDK_INT < 11) {
 			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.my_title_bar);
 			refreshButton = (Button) findViewById(R.id.refresh_button);
@@ -116,8 +109,10 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		// Create MyResultReceiver
 		mReceiver = new MyResultReceiver(new Handler());
 		mReceiver.setReceiver(this);
-
+		
 		bindToService();
+		WBWLists = mService.getWbw().getWbwLists();
+
 		progressDialog = new ProgressDialog(this);
 	}
 

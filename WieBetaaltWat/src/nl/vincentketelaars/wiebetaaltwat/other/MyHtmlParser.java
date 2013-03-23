@@ -360,6 +360,10 @@ public class MyHtmlParser {
 		if (title != null && title.equals("Wiebetaaltwat.nl : Houd gezamenlijke uitgaven overzichtelijk!")){
 			Document doc = Jsoup.parse(input);
 			Elements es = doc.getElementsByClass("status-error");
+			if (es == null || es.isEmpty()) { // No idea what to do
+				getErrors().add("Some weird error");
+				return true;
+			}
 			getErrors().add(es.text());
 			Log.i("Login", es.get(0).text());
 			return true;

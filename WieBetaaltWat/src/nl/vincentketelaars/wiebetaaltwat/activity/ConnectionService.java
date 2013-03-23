@@ -21,7 +21,6 @@ import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
-import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
 import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 
 import org.apache.http.HeaderElement;
@@ -38,6 +37,7 @@ import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -49,6 +49,7 @@ import org.apache.http.protocol.HTTP;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -57,6 +58,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ResultReceiver;
+import android.util.Log;
 
 /**
  * This Service is to remain active throughout the use of the application. Each activity should be able to bind to it. After binding, each activity can use any method needed,
@@ -71,8 +73,9 @@ public class ConnectionService extends Service {
 	private IBinder mBinder;
 	private WBW wbw;
 	private WBW wbwInitialize;
-	private int numberOfExpenses = 5;
+	private int numberOfExpenses = 1000;
 	private ResultReceiver mReceiver;
+	private int[] requestCounter;
 
 
 	/**
@@ -96,14 +99,13 @@ public class ConnectionService extends Service {
 		 // Create and initialize scheme registry 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        
+        schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
         // Create an HttpClient with the ThreadSafeClientConnManager.
         // This connection manager must be used if more than one thread will
         // be using the HttpClient.
         ClientConnectionManager cm = new ThreadSafeClientConnManager(httpParameters, schemeRegistry);
 		client = new DefaultHttpClient(cm, httpParameters);
 		mBinder = new LocalBinder();		
-		System.out.println("Dit gaat wel..");
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -136,17 +138,24 @@ public class ConnectionService extends Service {
 
 
 	public void initialize(String email, String password) {
-		wbw = new WBW(new ArrayList<WBWList>());
-		WBW temp = inputWBWList(Resources.privateFile);
+		setWbw(new WBW(new ArrayList<WBWList>()));
+		WBW temp = null;
+		try {
+		temp = inputWBW(Resources.privateFile);
+		} catch (ClassCastException e) {
+			Log.i("wbw", "Log file contains wrong object!");
+		}
 		if (temp != null && email.equals(temp.getEmail()) && password.equals(temp.getPassword())) {
-			wbw = temp;		
+			setWbw(temp);		
 		} else {
-			wbw.setEmail(email);
-			wbw.setPassword(password);
+			getWbw().setEmail(email);
+			getWbw().setPassword(password);
 		}
 
 		// Get the current WBW
 		wbwInitialize = new WBW(new ArrayList<WBWList>());
+		requestCounter = new int[3];
+		requestCounter[0] += 1;
 		new AsyncLogin().execute(new String[]{email, password});
 	}
 
@@ -388,7 +397,7 @@ public class ConnectionService extends Service {
 	 * @param file
 	 * @param wbwlist
 	 */
-	private void outputWBWList(String file, WBW w) {
+	private void outputWBW(String file, WBW w) {
 		try {
 			FileOutputStream fileOut = openFileOutput(file, Context.MODE_PRIVATE);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -407,7 +416,7 @@ public class ConnectionService extends Service {
 	 * @param file
 	 * @return
 	 */
-	private WBW inputWBWList(String file) {
+	private WBW inputWBW(String file) {
 		WBW w = null;
 		try {
 			FileInputStream fileIn = openFileInput(file);
@@ -428,6 +437,14 @@ public class ConnectionService extends Service {
 		return w;
 	}
 
+	public WBW getWbw() {
+		return wbw;
+	}
+
+	public void setWbw(WBW wbw) {
+		this.wbw = wbw;
+	}
+
 	/**
 	 * This private class, makes sure that the network connections are made on a separate thread.
 	 * @author Vincent
@@ -439,6 +456,7 @@ public class ConnectionService extends Service {
 		}
 
 		protected void onPostExecute(String back) {
+			requestCounter[0] -= 1;
 			MyHtmlParser parser = new MyHtmlParser(back);
 			ArrayList<WBWList> temp = parser.parseTheWBWLists();
 			wbwInitialize.setWbwLists(temp);
@@ -449,7 +467,12 @@ public class ConnectionService extends Service {
 					} else {
 						new AsyncExpenses().execute(new WBWList[]{wL});	
 					}
-				}					
+					requestCounter[1] += 1; 
+				}
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("wbw", wbwInitialize);
+				mReceiver.send(1, bundle);
+				createInlogFile(wbwInitialize.getEmail(), wbwInitialize.getPassword());
 			}			
 		}		
 	}
@@ -467,6 +490,7 @@ public class ConnectionService extends Service {
 		}
 
 		protected void onPostExecute(String back) {
+			requestCounter[1] -= 1; 
 			MyHtmlParser parser = new MyHtmlParser(back);
 			boolean correctInput = parser.correctInputExpenses();	
 			if (correctInput) {
@@ -489,6 +513,7 @@ public class ConnectionService extends Service {
 						} else {
 							new AsyncRetrieveMemberStatus().execute(new WBWList[]{wL});	
 						}
+						requestCounter[2] += 1; 
 					}
 				}
 				Bundle bundle = new Bundle();
@@ -512,12 +537,26 @@ public class ConnectionService extends Service {
 		}
 
 		protected void onPostExecute(String back) {
+			requestCounter[2] -= 1; 
 			MyHtmlParser parser = new MyHtmlParser(back);
 			for (WBWList wL : wbwInitialize.getWbwLists()) {
 				if (wL.getHTML().equals(wbw.getHTML())) {
 					wL.setGroupMembers(parser.parseEditGroup(wbw.getGroupMembers()));			
 				}
 			}
+			if (requestCounter[2] == 0) outputWBW(Resources.privateFile, getWbw());
 		}		
+	}
+	
+	/**
+	 * This method will create a file, holding an email and password.
+	 */
+	private void createInlogFile(String email, String password) {
+		SharedPreferences settings = getSharedPreferences(Resources.inlogFile, MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("useInlogFile", true);
+		editor.putString("Email", email);
+		editor.putString("Password", password);
+		editor.commit();
 	}
 }
