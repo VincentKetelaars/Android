@@ -170,7 +170,6 @@ public class MyHtmlParser {
 		Elements groups = listGroupsList.getElementsByTag("a");
 		for (int x = 2; x < groups.size(); x++) {
 			String onclick = groups.get(x).attr("onclick");
-			System.out.println(onclick);
 			if (onclick != null) {
 				ArrayList<Member> members = new ArrayList<Member>();
 				Pattern p = Pattern.compile("\\d+");
@@ -274,9 +273,8 @@ public class MyHtmlParser {
 		double myBalance = Double.parseDouble(userBalance.getElementsByTag("strong").get(0).text().substring(2).replace(",", "."));
 		members.add(new Member(me, myBalance));
 		for (Element e : memberBalances.getElementsByTag("p")) {
-			if (e.getElementsByTag("span").size() != 1)
-				continue;
-			String member = e.child(0).text();
+			Elements span = e.getElementsByTag("span");
+			String member = span.get(0).text();
 			double balance = Double.parseDouble(e.child(1).text().substring(2).replace(",", "."));
 			members.add(new Member(member, balance));
 		}		
@@ -292,6 +290,10 @@ public class MyHtmlParser {
 		if (title != null && title.equals("Wiebetaaltwat.nl : Houd gezamenlijke uitgaven overzichtelijk!")){
 			Document doc = Jsoup.parse(input);
 			Elements es = doc.getElementsByClass("status-error");
+			if (es == null || es.isEmpty()) { // No idea what to do
+				getErrors().add("Some weird error");
+				return true;
+			}
 			getErrors().add(es.text());
 			Log.i("Login", es.get(0).text());
 			return true;
