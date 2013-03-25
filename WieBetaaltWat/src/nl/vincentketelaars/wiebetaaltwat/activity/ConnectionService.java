@@ -12,6 +12,8 @@ import java.io.Reader;
 import java.io.StreamCorruptedException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.util.ArrayList;
 import java.util.List;
 
