@@ -84,6 +84,7 @@ public class MyHtmlParser {
 		String title = retrieveTitle();
 		if (title != null && title.equals("Wiebetaaltwat.nl : Mijn lijsten"))
 			return true;
+		// Log.i("WBWList", input);
 		Log.i("WBWList", "Retrieved the wrong page");
 		return false;
 	}
