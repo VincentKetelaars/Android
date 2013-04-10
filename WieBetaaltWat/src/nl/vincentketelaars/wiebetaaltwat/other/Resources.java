@@ -11,6 +11,9 @@ public class Resources {
 	public final static String inlogFile = "Inlog";
 	// WBW Url
 	public final static String WBWUrl = "http://www.wiebetaaltwat.nl";
+	// Password of bks key
+	public final static String bksPassword = "pass12";
+	public final static String bksFile = "res/raw/mynewkey3.bks";
 	
 	public static void showToast(Context context, String text, int position, int duration) {
 		Toast toast = Toast.makeText(context, text, duration);

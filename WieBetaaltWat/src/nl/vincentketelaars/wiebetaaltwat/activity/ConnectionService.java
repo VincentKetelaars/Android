@@ -22,6 +22,7 @@ import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBWList;
+import nl.vincentketelaars.wiebetaaltwat.other.AdditionalKeyStoresSSLSocketFactory;
 import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 
@@ -101,13 +102,32 @@ public class ConnectionService extends Service {
 		 // Create and initialize scheme registry 
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+        schemeRegistry.register(new Scheme("https", createAdditionalCertsSSLSocketFactory(), 443));
         // Create an HttpClient with the ThreadSafeClientConnManager.
         // This connection manager must be used if more than one thread will
         // be using the HttpClient.
         ClientConnectionManager cm = new ThreadSafeClientConnManager(httpParameters, schemeRegistry);
 		client = new DefaultHttpClient(cm, httpParameters);
 		mBinder = new LocalBinder();		
+	}
+	
+	protected org.apache.http.conn.ssl.SSLSocketFactory createAdditionalCertsSSLSocketFactory() {
+	    try {
+	        final KeyStore ks = KeyStore.getInstance("BKS");
+
+	        // the bks file we generated above
+	        final InputStream in = this.getClass().getClassLoader().getResourceAsStream(Resources.bksFile);  
+	        try {
+	            // don't forget to put the password used above in strings.xml/mystore_password
+	            ks.load(in, Resources.bksPassword.toCharArray());
+	        } finally {
+	            in.close();
+	        }
+	        return new AdditionalKeyStoresSSLSocketFactory(ks);
+
+	    } catch( Exception e ) {
+	        throw new RuntimeException(e);
+	    }
 	}
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {

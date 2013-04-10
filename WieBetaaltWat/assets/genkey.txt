@@ -1,0 +1,3 @@
+"C:\Program Files\Java\jre7\bin\keytool" -import -v -trustcacerts -alias 0 -file storecom.pem -keystore mynewkey.bks -storetype BKS -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath "C:\Program Files\Java\jre7\bin\bcprov-jdk16-1.46.jar" -storepass "pass"
+
+keytool -genkey -alias myproject -keystore C:/Users/Vincent/Downloads/mynewkey.bks -storepass 1234asdfl -storetype BKS -provider org.bouncycastle.jce.provider.BouncyCastleProvider

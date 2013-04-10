@@ -1,0 +1,97 @@
+CONNECTED(00000003)
+depth=1 C = IL, O = StartCom Ltd., OU = Secure Digital Certificate Signing, CN = StartCom Class 2 Primary Intermediate Server CA
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+---
+Certificate chain
+ 0 s:/description=487652-147nDeV9vp47o9gm/C=NL/ST=North Holland/L=Amsterdam/O=SundayAfternoon B.V./CN=*.wiebetaaltwat.nl/emailAddress=postmaster@wiebetaaltwat.nl
+   i:/C=IL/O=StartCom Ltd./OU=Secure Digital Certificate Signing/CN=StartCom Class 2 Primary Intermediate Server CA
+ 1 s:/C=IL/O=StartCom Ltd./OU=Secure Digital Certificate Signing/CN=StartCom Class 2 Primary Intermediate Server CA
+   i:/C=IL/O=StartCom Ltd./OU=Secure Digital Certificate Signing/CN=StartCom Certification Authority
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIHjTCCBnWgAwIBAgICfT4wDQYJKoZIhvcNAQEFBQAwgYwxCzAJBgNVBAYTAklM
+MRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRh
+bCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAy
+IFByaW1hcnkgSW50ZXJtZWRpYXRlIFNlcnZlciBDQTAeFw0xMTA4MTcxNTQ2MDNa
+Fw0xMzA4MTgxMzU5MzBaMIHDMSAwHgYDVQQNExc0ODc2NTItMTQ3bkRlVjl2cDQ3
+bzlnbTELMAkGA1UEBhMCTkwxFjAUBgNVBAgTDU5vcnRoIEhvbGxhbmQxEjAQBgNV
+BAcTCUFtc3RlcmRhbTEdMBsGA1UEChMUU3VuZGF5QWZ0ZXJub29uIEIuVi4xGzAZ
+BgNVBAMUEioud2llYmV0YWFsdHdhdC5ubDEqMCgGCSqGSIb3DQEJARYbcG9zdG1h
+c3RlckB3aWViZXRhYWx0d2F0Lm5sMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAqoc2lsz3LJ0qDKg2CjAyBAH3G7sN+YiFrCPggCU3WJBxXrWvSIW8o4mB
+O9UAMPsnro0/OmXfaG4/In+oe7O4BAIRpFKn0pnzMfN1hwsZLPOtHhx+AgIZXtBY
+Zdbbfd7Yaj9p199spTxdbXysPPxIEMkMihf2ywcTmug9csLDFHYoYO4Z2RpZDZPv
+wPPamPxwQ5yCKu5g3uKedTT+B1kBRbnOEYdRCsj/2LJ0ZDFX7NuZf5pD2He7L7sZ
+k5uM0RY0d3cuZvb8RDRvVHrWVKdRcXgT88VwUp3CI+S6Q8J5HBvwrhDhc4sstWju
+CJx84iN+6dmXyibKHabK5tiPJ2e+zQIDAQABo4IDvjCCA7owCQYDVR0TBAIwADAL
+BgNVHQ8EBAMCA6gwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMB0GA1Ud
+DgQWBBSQvk+ot9wyY691r6u75yHfE/OEDjAfBgNVHSMEGDAWgBQR2yNF/VTManFv
+hIoD1773AS8mhjAvBgNVHREEKDAmghIqLndpZWJldGFhbHR3YXQubmyCEHdpZWJl
+dGFhbHR3YXQubmwwggIhBgNVHSAEggIYMIICFDCCAhAGCysGAQQBgbU3AQICMIIB
+/zAuBggrBgEFBQcCARYiaHR0cDovL3d3dy5zdGFydHNzbC5jb20vcG9saWN5LnBk
+ZjA0BggrBgEFBQcCARYoaHR0cDovL3d3dy5zdGFydHNzbC5jb20vaW50ZXJtZWRp
+YXRlLnBkZjCB9wYIKwYBBQUHAgIwgeowJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlv
+biBBdXRob3JpdHkwAwIBARqBvlRoaXMgY2VydGlmaWNhdGUgd2FzIGlzc3VlZCBh
+Y2NvcmRpbmcgdG8gdGhlIENsYXNzIDIgVmFsaWRhdGlvbiByZXF1aXJlbWVudHMg
+b2YgdGhlIFN0YXJ0Q29tIENBIHBvbGljeSwgcmVsaWFuY2Ugb25seSBmb3IgdGhl
+IGludGVuZGVkIHB1cnBvc2UgaW4gY29tcGxpYW5jZSBvZiB0aGUgcmVseWluZyBw
+YXJ0eSBvYmxpZ2F0aW9ucy4wgZwGCCsGAQUFBwICMIGPMCcWIFN0YXJ0Q29tIENl
+cnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQIaZExpYWJpbGl0eSBhbmQgd2FycmFu
+dGllcyBhcmUgbGltaXRlZCEgU2VlIHNlY3Rpb24gIkxlZ2FsIGFuZCBMaW1pdGF0
+aW9ucyIgb2YgdGhlIFN0YXJ0Q29tIENBIHBvbGljeS4wNQYDVR0fBC4wLDAqoCig
+JoYkaHR0cDovL2NybC5zdGFydHNzbC5jb20vY3J0Mi1jcmwuY3JsMIGOBggrBgEF
+BQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20v
+c3ViL2NsYXNzMi9zZXJ2ZXIvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
+cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczIuc2VydmVyLmNhLmNydDAjBgNVHRIE
+HDAahhhodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEB
+ANCztYIB0cSengPL7YhCcHpyIR1C3gR3pHIYP7CKjFWz0nOh1vwh3+tBMyephyYp
+cW28KdlBa+PJT17X+xIhD1BjeFOAwCLwLEfEKQVGSiE52KNG01Jb99aAwgmm8OuX
+bmkwoLYsg/ENkLEKDNoRQv1Dksj+NAEJ3ppBk1wCS2yqfmWe+H0s9JFaP6vI5Gj8
+DaUW5OhkqUN1pApnOu76cDE1wMurgdhMxwrWC82bw/BDqKn5UkhDgwfLbLIkvoEY
+XuEmNiRnAYyBWrpz4uhQ3sbOqABowHuTIwK6qKAdzHPZM+eTcOn6e76POfh3lb0d
+ORklaJdTcL/tEvrYuw7YgLs=
+-----END CERTIFICATE-----
+subject=/description=487652-147nDeV9vp47o9gm/C=NL/ST=North Holland/L=Amsterdam/O=SundayAfternoon B.V./CN=*.wiebetaaltwat.nl/emailAddress=postmaster@wiebetaaltwat.nl
+issuer=/C=IL/O=StartCom Ltd./OU=Secure Digital Certificate Signing/CN=StartCom Class 2 Primary Intermediate Server CA
+---
+No client certificate CA names sent
+---
+SSL handshake has read 4431 bytes and written 440 bytes
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES256-SHA
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1.1
+    Cipher    : DHE-RSA-AES256-SHA
+    Session-ID: 41AE9CB729E6E827A4C77EF3FE7092756711CD7098522564F03A4004EC5D009C
+    Session-ID-ctx: 
+    Master-Key: F86486D7668E0ECAB9F08D8C7584818B0C661E823642B258BC81ECB2E54748062913BC42172085F103B5DC0729B3BD9B
+    Key-Arg   : None
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 300 (seconds)
+    TLS session ticket:
+    0000 - f4 67 c6 86 0c 6b bc bf-41 51 39 96 b5 85 e3 31   .g...k..AQ9....1
+    0010 - 60 01 85 a5 39 76 58 54-56 4b 99 35 13 b2 9e a8   `...9vXTVK.5....
+    0020 - 76 5a 57 e1 bf be d3 9e-13 b7 26 be 0a 63 0d c9   vZW.......&..c..
+    0030 - 60 ea 15 07 38 e6 51 8f-33 09 25 1f 1f 64 7a 86   `...8.Q.3.%..dz.
+    0040 - ec 8b e8 bc e3 60 e0 4d-bb 58 b8 5d 25 94 a1 11   .....`.M.X.]%...
+    0050 - a1 dc 51 9e 1e 7e 18 91-79 ea 61 9c 89 9e 86 89   ..Q..~..y.a.....
+    0060 - 9c ea 70 6d 00 be 05 66-99 6f 6b 9f 0a ae 5a 57   ..pm...f.ok...ZW
+    0070 - 0e 38 e8 e1 c6 74 17 fb-08 d2 59 ec 80 fb 38 ce   .8...t....Y...8.
+    0080 - c5 6c ee 88 53 15 d1 25-ad 41 ae fa d4 63 08 71   .l..S..%.A...c.q
+    0090 - 43 a9 d7 e9 4f f4 0d 1c-11 fd 47 58 4a 71 f3 25   C...O.....GXJq.%
+    00a0 - c8 38 f3 9c ae f8 2d 0e-e1 09 c8 e4 71 c5 e4 5a   .8....-.....q..Z
+    00b0 - 26 81 5a 61 60 87 ce 0d-23 2e 71 3e c4 ea 24 b0   &.Za`...#.q>..$.
+
+    Start Time: 1365102142
+    Timeout   : 300 (sec)
+    Verify return code: 20 (unable to get local issuer certificate)
+---
+closed

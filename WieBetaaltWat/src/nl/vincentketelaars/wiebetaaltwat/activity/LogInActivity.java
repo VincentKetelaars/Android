@@ -3,7 +3,6 @@ package nl.vincentketelaars.wiebetaaltwat.activity;
 import nl.vincentketelaars.wiebetaaltwat.R;
 import nl.vincentketelaars.wiebetaaltwat.activity.ConnectionService.LocalBinder;
 import nl.vincentketelaars.wiebetaaltwat.objects.WBW;
-import nl.vincentketelaars.wiebetaaltwat.other.MyHtmlParser;
 import nl.vincentketelaars.wiebetaaltwat.other.MyResultReceiver;
 import nl.vincentketelaars.wiebetaaltwat.other.Resources;
 import android.app.Activity;
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -202,8 +200,10 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 	 * The response will be read and appropriately handled.
 	 */
 	public void onOKClicked() {
-		email = emailInput.getText().toString();
-		password = passwordInput.getText().toString();
+		//email = emailInput.getText().toString();
+		//password = passwordInput.getText().toString();
+		email = "vincentketelaars@hotmail.com";
+		password = "Godelinde1";
 		createConnection();	
 	}
 
@@ -220,7 +220,7 @@ public class LogInActivity extends Activity implements OnClickListener, MyResult
 				startActivity(intent);
 			} 
 		} 
-		showProgressDialog();
+		//showProgressDialog();
 	}
 
 	/**
