@@ -6,12 +6,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 
 import nl.vincentketelaars.wiebetaaltwat.objects.Member;
 import nl.vincentketelaars.wiebetaaltwat.objects.MemberGroup;
 import nl.vincentketelaars.wiebetaaltwat.objects.Resources;
+import nl.vincentketelaars.wiebetaaltwat.views.AdditionalKeyStoresSSLSocketFactory;
 
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -22,7 +24,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -64,8 +70,33 @@ public class ConnectionService extends Service {
 		// in milliseconds which is the timeout for waiting for data.
 		int timeoutSocket = 5000;
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+		
+		final SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", createAdditionalCertsSSLSocketFactory(), 443));
+		final ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParameters,schemeRegistry);		
+		
 		client = new DefaultHttpClient(httpParameters);
 		mBinder = new LocalBinder();
+	}
+	
+	protected org.apache.http.conn.ssl.SSLSocketFactory createAdditionalCertsSSLSocketFactory() {
+	    try {
+	        final KeyStore ks = KeyStore.getInstance("BKS");
+
+	        // the bks file we generated above
+	        final InputStream in = this.getClass().getClassLoader().getResourceAsStream(Resources.bksFile);  
+	        try {
+	            // don't forget to put the password used above in strings.xml/mystore_password
+	            ks.load(in, Resources.bksPassword.toCharArray());
+	        } finally {
+	            in.close();
+	        }
+	        return new AdditionalKeyStoresSSLSocketFactory(ks);
+
+	    } catch( Exception e ) {
+	        throw new RuntimeException(e);
+	    }
 	}
 	
 	/**
