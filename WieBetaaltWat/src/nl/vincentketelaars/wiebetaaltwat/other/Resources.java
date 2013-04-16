@@ -10,7 +10,7 @@ public class Resources {
 	// SharedPreferences
 	public final static String inlogFile = "Inlog";
 	// WBW Url
-	public final static String WBWUrl = "http://www.wiebetaaltwat.nl";
+	public final static String WBWUrl = "https://www.wiebetaaltwat.nl";
 	// Password of bks key
 	public final static String bksPassword = "pass12";
 	public final static String bksFile = "res/raw/mynewkey3.bks";
