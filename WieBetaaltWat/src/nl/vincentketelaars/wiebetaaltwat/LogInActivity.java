@@ -193,8 +193,8 @@ public class LogInActivity extends Activity implements OnClickListener {
 	 * The response will be read and appropriately handled.
 	 */
 	public void onOKClicked() {
-		email = "vincentketelaars@hotmail.com"; //emailInput.getText().toString();
-		password = "Godelinde1"; // passwordInput.getText().toString();
+		email = emailInput.getText().toString();
+		password = passwordInput.getText().toString();
 		createConnection();	
 	}
 
