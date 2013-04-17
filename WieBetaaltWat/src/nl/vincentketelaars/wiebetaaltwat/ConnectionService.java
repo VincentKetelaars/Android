@@ -76,7 +76,7 @@ public class ConnectionService extends Service {
 		schemeRegistry.register(new Scheme("https", createAdditionalCertsSSLSocketFactory(), 443));
 		final ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParameters,schemeRegistry);		
 		
-		client = new DefaultHttpClient(httpParameters);
+		client = new DefaultHttpClient(cm, httpParameters);
 		mBinder = new LocalBinder();
 	}
 	

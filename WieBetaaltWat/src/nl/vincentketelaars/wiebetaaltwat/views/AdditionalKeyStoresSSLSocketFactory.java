@@ -77,9 +77,11 @@ public class AdditionalKeyStoresSSLSocketFactory extends SSLSocketFactory {
              * to any that are X509TrustManagers
              */
             for (TrustManagerFactory tmf : factories)
-                for( TrustManager tm : tmf.getTrustManagers() )
-                    if (tm instanceof X509TrustManager)
+                for( TrustManager tm : tmf.getTrustManagers() ) {
+                    if (tm instanceof X509TrustManager) {
                         x509TrustManagers.add( (X509TrustManager)tm );
+                    }
+                }
 
 
             if( x509TrustManagers.size()==0 )
@@ -107,7 +109,7 @@ public class AdditionalKeyStoresSSLSocketFactory extends SSLSocketFactory {
                     // ignore
                 }
             }
-            throw new CertificateException();
+            throw new CertificateException("No certificate worked out!");
         }
 
         public X509Certificate[] getAcceptedIssuers() {
