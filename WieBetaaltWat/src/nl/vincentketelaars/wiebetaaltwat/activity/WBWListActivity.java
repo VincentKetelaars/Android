@@ -110,8 +110,7 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 		mReceiver = new MyResultReceiver(new Handler());
 		mReceiver.setReceiver(this);
 		
-		bindToService();
-		WBWLists = mService.getWbw().getWbwLists();
+		bindToService();		
 
 		progressDialog = new ProgressDialog(this);
 	}
@@ -195,6 +194,10 @@ public class WBWListActivity extends Activity implements android.view.View.OnCli
 				intent.putExtra("receiver", mReceiver);
 				getApplicationContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 				getApplicationContext().startService(intent);
+				if (mBound)
+					WBWLists = mService.getWbw().getWbwLists();
+				else
+					System.out.println("Helaas.. Service is nog niet gepakt..");
 			}
 		};
 		t.start();
